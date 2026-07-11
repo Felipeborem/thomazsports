@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Catálogo Profissional | THOMAZ SPORTS</title>
+    <title>Catálogo Elite | THOMAZ SPORTS</title>
     <meta name="description" content="Catálogo de alta performance Beach Tennis.">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@
         /* --- LAYOUT --- */
         .main-wrapper { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 80px); }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (Desktop) --- */
         aside {
             background: var(--deep-gray);
             color: #fff;
@@ -69,6 +69,7 @@
             top: 80px;
             height: calc(100vh - 80px);
             overflow-y: auto;
+            transition: var(--transition);
         }
         .sidebar-section { margin-bottom: 35px; }
         .sidebar-title {
@@ -105,21 +106,98 @@
             border-radius: 10px;
         }
 
+        /* --- MOBILE FILTER DRAWER --- */
+        .mobile-filter-btn {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            background: var(--dark-black);
+            color: var(--primary-gold);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 2px solid var(--primary-gold);
+            font-weight: 800;
+            text-transform: uppercase;
+            z-index: 1500;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            align-items: center;
+            gap: 10px;
+        }
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 300px;
+            height: 100%;
+            background: var(--deep-gray);
+            color: #fff;
+            z-index: 2000;
+            transition: var(--transition);
+            padding: 40px 25px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+        .mobile-drawer.open { left: 0; }
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1 same;
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+        .drawer-overlay.open { display: block; z-index: 1 same; }
+        .close-drawer {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: block;
+            text-align: right;
+        }
+
         /* --- CONTENT AREA --- */
         .content { padding: 0; }
         .catalog-hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1622279457486-62d797367792?q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            padding: 60px 40px;
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: #fff;
+            overflow: hidden;
             border-bottom: 4px solid var(--primary-gold);
         }
-        .catalog-hero h1 { font-size: 3rem; margin-bottom: 10px; }
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: -1;
+        }
+        .catalog-hero h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .catalog-hero h1 span { color: var(--primary-gold); }
+        .catalog-hero p { color: #ddd; font-size: 1.2rem; max-width: 700px; margin: 0 auto; padding: 0 20px; }
 
-        /* TOOLBAR (Busca e Ordem) */
+        /* TOOLBAR */
         .catalog-toolbar {
             background: #fff;
             padding: 20px 40px;
@@ -181,36 +259,37 @@
         .product-card:hover img { transform: scale(1.05); }
 
         .product-brand {
-            font-size: 0.9rem;
+            font-size: 1.1rem; 
             font-weight: 800;
             color: var(--primary-gold);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: block;
         }
         .product-name {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.6rem; 
+            font-weight: 900;
             margin-bottom: 15px;
-            color: var(--text-main);
-            min-height: 45px;
+            color: var(--dark-black); 
+            min-height: 55px;
+            line-height: 1.2;
         }
 
         .product-specs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 12px;
             background: #f9f9f9;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 18px;
+            border-radius: 20px;
             margin-bottom: 20px;
             border: 1px solid #eee;
         }
-        .spec-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-main); font-weight: 600; }
-        .spec-item i { color: var(--primary-gold); width: 18px; }
+        .spec-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; color: var(--text-main); font-weight: 600; }
+        .spec-item i { color: var(--primary-gold); width: 20px; text-align: center; }
 
         .product-price {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--dark-black);
             margin-bottom: 20px;
@@ -236,15 +315,55 @@
         }
         .btn-buy:hover { background-color: var(--primary-gold); color: #000; transform: translateY(-3px); }
 
+        /* WHATSAPP POPUP */
+        .whatsapp-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 2000;
+            transition: var(--transition);
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+        .whatsapp-popup:hover { transform: scale(1.1); background-color: #128C7E; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
         .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; width: 100%; }
         .spinner { width: 50px; height: 50px; border: 5px solid var(--border-color); border-top: 5px solid var(--primary-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* --- RESPONSIVIDADE TOTAL --- */
         @media (max-width: 992px) {
             .main-wrapper { grid-template-columns: 1fr; }
             aside { display: none; }
-            .catalog-toolbar { flex-direction: column; align-items: stretch; }
+            .mobile-filter-btn { display: flex; }
+            .catalog-toolbar { flex-direction: column; align-items: stretch; padding: 20px; }
             .search-box { max-width: 100%; }
+            .catalog-hero { height: 300px; }
+            .catalog-hero h1 { font-size: 2.2rem; }
+            .products-section { padding: 20px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        }
+        
+        @media (max-width: 480px) {
+            .catalog-hero h1 { font-size: 1.8rem; }
+            .product-name { font-size: 1.3rem; }
+            .product-price { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -261,7 +380,8 @@
     </header>
 
     <div class="main-wrapper">
-        <aside>
+        <!-- SIDEBAR DESKTOP -->
+        <aside id="desktop-sidebar">
             <div class="sidebar-section">
                 <span class="sidebar-title">Categorias</span>
                 <ul class="filter-list" id="cat-filters">
@@ -272,9 +392,10 @@
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
                 <ul class="filter-list">
-                    <li class="filter-item" onclick="setFilter('preco', 'baixo', this)">Até R$ 500 <span class="count-badge" id="count-baixo">0</span></li>
-                    <li class="filter-item" onclick="setFilter('preco', 'medio', this)">R$ 500 - 1000 <span class="count-badge" id="count-medio">0</span></li>
-                    <li class="filter-item" onclick="setFilter('preco', 'alto', this)">Acima de R$ 1000 <span class="count-badge" id="count-alto">0</span></li>
+                    <li class="filter-item" onclick="setFilter('preco', 'baixo', this)">Até R$ 100 <span class="count-badge" id="count-baixo">0</span></li>
+                    <li class="filter-item" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999 <span class="count-badge" id="count-medio">0</span></li>
+                    <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000 <span class="count-badge" id="count-alto">0</span></li>
+                    <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000 <span class="count-badge" id="count-premium">0</span></li>
                 </ul>
             </div>
 
@@ -294,10 +415,51 @@
             </div>
         </aside>
 
+        <!-- MOBILE DRAWER (Lado Esquerdo) -->
+        <div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
+        <div class="mobile-drawer" id="mobile-drawer">
+            <button class="close-drawer" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Categorias</span>
+                <ul class="filter-list" id="cat-filters-mobile"></ul>
+            </div>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Faixa de Preço</span>
+                <ul class="filter-list">
+                    <li class="filter-item" onclick="setFilter('preco', 'baixo', this)">Até R$ 100</li>
+                    <li class="filter-item" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999</li>
+                    <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000</li>
+                    <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000</li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Marcas</span>
+                <ul class="filter-list" id="brand-filters-mobile"></ul>
+            </div>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Ano</span>
+                <ul class="filter-list" id="year-filters-mobile"></ul>
+            </div>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Material</span>
+                <ul class="filter-list" id="material-filters-mobile"></ul>
+            </div>
+        </div>
+
+        <div class="mobile-filter-btn" onclick="toggleDrawer()">
+            <i class="fas fa-filter"></i> Filtros
+        </div>
+
         <div class="content">
             <section class="catalog-hero">
-                <h1>Catálogo <span>Elite</span></h1>
-                <p>Equipamentos de alta performance para atletas que buscam a perfeição.</p>
+                <video class="hero-video" autoplay muted loop playsinline>
+                    <source src="video.mp4" type="video/mp4">
+                </video>
+                <div class="hero-overlay"></div>
+                <div style="position: relative; z-index: 1;">
+                    <h1 data-aos="zoom-in">Catálogo <span>Elite</span></h1>
+                    <p data-aos="fade-up" data-aos-delay="200">Equipamentos de alta performance para atletas que buscam a perfeição.</p>
+                </div>
             </section>
 
             <div class="catalog-toolbar">
@@ -324,6 +486,10 @@
         </div>
     </div>
 
+    <a href="https://wa.me/27998912042" class="whatsapp-popup" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 800, once: true });
@@ -338,6 +504,11 @@
         let allProducts = [];
         let filters = { categoria: 'Todos', marca: 'Todos', preco: 'Todos', ano: 'Todos', material: 'Todos' };
 
+        function toggleDrawer() {
+            document.getElementById('mobile-drawer').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('open');
+        }
+
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/300';
             if (url.includes('drive.google.com')) {
@@ -350,7 +521,7 @@
 
         function parsePrice(priceStr) {
             if (!priceStr) return 0;
-            return parseFloat(priceStr.toString().replace('R$', '').replace('.', '').replace(',', '.').trim());
+            return parseFloat(priceStr.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
         }
 
         async function fetchProducts() {
@@ -374,62 +545,76 @@
         }
 
         function initDynamicFilters() {
-            const setupFilter = (id, key) => {
-                const container = document.getElementById(id);
+            const setupFilter = (idDesktop, idMobile, key) => {
                 const values = [...new Set(allProducts.map(p => p[key]))].filter(Boolean).sort();
                 
-                const allLi = document.createElement('li');
-                allLi.className = 'filter-item active';
-                allLi.innerHTML = `Todos <span class="count-badge">${allProducts.length}</span>`;
-                allLi.onclick = () => setFilter(key, 'Todos', allLi);
-                container.appendChild(allLi);
+                const createItem = (val, isAll = false) => {
+                    const li = document.createElement('li');
+                    li.className = `filter-item ${isAll ? 'active' : ''}`;
+                    const count = isAll ? allProducts.length : allProducts.filter(p => p[key] === val).length;
+                    li.innerHTML = `${isAll ? 'Todos' : val} <span class="count-badge">${count}</span>`;
+                    li.onclick = () => setFilter(key, isAll ? 'Todos' : val, li);
+                    return li;
+                };
+
+                const dContainer = document.getElementById(idDesktop);
+                const mContainer = document.getElementById(idMobile);
+                
+                dContainer.appendChild(createItem(null, true));
+                mContainer.appendChild(createItem(null, true));
 
                 values.forEach(val => {
-                    const count = allProducts.filter(p => p[key] === val).length;
-                    const li = document.createElement('li');
-                    li.className = 'filter-item';
-                    li.innerHTML = `${val} <span class="count-badge">${count}</span>`;
-                    li.onclick = () => setFilter(key, val, li);
-                    container.appendChild(li);
+                    dContainer.appendChild(createItem(val));
+                    mContainer.appendChild(createItem(val));
                 });
             };
 
-            // Categorias Fixas
-            const catContainer = document.getElementById('cat-filters');
+            // Categorias
+            const catD = document.getElementById('cat-filters');
+            const catM = document.getElementById('cat-filters-mobile');
             ['Raquete', 'Bola', 'Acessório'].forEach(cat => {
-                const li = document.createElement('li');
-                li.className = 'filter-item';
                 const count = allProducts.filter(p => p.categoria === cat).length;
-                li.innerHTML = `${cat} <span class="count-badge">${count}</span>`;
-                li.onclick = () => setFilter('categoria', cat, li);
-                catContainer.appendChild(li);
+                const item = (container) => {
+                    const li = document.createElement('li');
+                    li.className = 'filter-item';
+                    li.innerHTML = `${cat} <span class="count-badge">${count}</span>`;
+                    li.onclick = () => setFilter('categoria', cat, li);
+                    container.appendChild(li);
+                };
+                item(catD); item(catM);
             });
 
-            setupFilter('brand-filters', 'marca');
-            setupFilter('year-filters', 'ano');
-            setupFilter('material-filters', 'material');
+            setupFilter('brand-filters', 'brand-filters-mobile', 'marca');
+            setupFilter('year-filters', 'year-filters-mobile', 'ano');
+            setupFilter('material-filters', 'material-filters-mobile', 'material');
             updatePriceCounts();
         }
 
         function updatePriceCounts() {
-            const counts = { baixo: 0, medio: 0, alto: 0 };
+            const counts = { baixo: 0, medio: 0, alto: 0, premium: 0 };
             allProducts.forEach(p => {
                 const pr = parsePrice(p.preco);
-                if (pr > 0 && pr <= 500) counts.baixo++;
-                else if (pr > 500 && pr <= 1000) counts.medio++;
-                else if (pr > 1000) counts.alto++;
+                if (pr > 0 && pr <= 100) counts.baixo++;
+                else if (pr > 100 && pr <= 999) counts.medio++;
+                else if (pr > 999 && pr <= 2000) counts.alto++;
+                else if (pr > 2000) counts.premium++;
             });
             document.getElementById('count-baixo').textContent = counts.baixo;
             document.getElementById('count-medio').textContent = counts.medio;
             document.getElementById('count-alto').textContent = counts.alto;
+            document.getElementById('count-premium').textContent = counts.premium;
         }
 
         function setFilter(key, value, element) {
             filters[key] = value;
-            // UI Active state
-            const parent = element.parentElement;
-            parent.querySelectorAll('.filter-item').forEach(li => li.classList.remove('active'));
-            element.classList.add('active');
+            // Sincroniza a classe active entre desktop e mobile
+            document.querySelectorAll('.filter-item').forEach(li => {
+                if(li.textContent.includes(value)) li.classList.add('active');
+                else if(!li.textContent.includes('Todos')) li.classList.remove('active');
+            });
+            
+            // Se for mobile, fecha o drawer após filtrar
+            if(window.innerWidth <= 992) toggleDrawer();
             applyFilters();
         }
 
@@ -445,16 +630,16 @@
                 
                 let matchPrice = true;
                 const pr = parsePrice(p.preco);
-                if (filters.preco === 'baixo') matchPrice = pr > 0 && pr <= 500;
-                else if (filters.preco === 'medio') matchPrice = pr > 500 && pr <= 1000;
-                else if (filters.preco === 'alto') matchPrice = pr > 1000;
+                if (filters.preco === 'baixo') matchPrice = pr > 0 && pr <= 100;
+                else if (filters.preco === 'medio') matchPrice = pr > 100 && pr <= 999;
+                else if (filters.preco === 'alto') matchPrice = pr > 999 && pr <= 2000;
+                else if (filters.preco === 'premium') matchPrice = pr > 2000;
 
                 const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || '').toLowerCase().includes(searchTerm);
 
                 return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
             });
 
-            // Ordenação
             if (sortBy === 'low') filtered.sort((a, b) => parsePrice(a.preco) - parsePrice(b.preco));
             else if (sortBy === 'high') filtered.sort((a, b) => parsePrice(b.preco) - parsePrice(a.preco));
             else if (sortBy === 'name') filtered.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
@@ -467,7 +652,7 @@
             container.innerHTML = ''; 
 
             if (products.length === 0) {
-                container.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1; padding: 50px;">Nenhum produto encontrado para esses filtros.</p>';
+                container.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1; padding: 50px;">Nenhum produto encontrado.</p>';
                 return;
             }
 
@@ -480,7 +665,7 @@
                 let specsHTML = '';
                 if (product.peso) specsHTML += `<div class="spec-item"><i class="fas fa-weight-hanging"></i><span class="spec-value">${product.peso}</span></div>`;
                 if (product.material) specsHTML += `<div class="spec-item"><i class="fas fa-gem"></i><span class="spec-value">${product.material}</span></div>`;
-                if (product.balance) specsHTML += `<div class="spec-item"><i class="fas fa-crosshairs"></i><span class="spec-value">${product.balance}</span></div>`;
+                if (product.balance) specsHTML += `<div class="spec-item"><i class="fas fa-ruler-combined"></i><span class="spec-value">${product.balance}</span></div>`;
 
                 card.innerHTML = `
                     <img src="${formatImageUrl(product.imagem || product.imagem_url)}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/300'">
