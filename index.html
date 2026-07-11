@@ -488,10 +488,69 @@
         }
 
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.8rem; }
-            .section-title { font-size: 2rem; }
-            .hero-btns { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 320px; }
+            .container { padding: 0 16px; }
+
+            .logo img { height: 50px; }
+
+            .nav-actions .btn { padding: 10px 18px !important; font-size: 0.75rem !important; }
+
+            .hero { height: 100vh; min-height: 600px; padding-top: 100px; }
+            .hero-content h1 { font-size: 2.4rem; }
+            .hero-content p { font-size: 1.05rem; margin-bottom: 30px; }
+            .hero-btns { flex-direction: column; align-items: center; gap: 15px; }
+            .btn { width: 100%; max-width: 320px; padding: 14px 24px; }
+
+            .section-title { font-size: 1.8rem; margin-bottom: 40px; }
+
+            .brands { padding: 50px 0; }
+            .brand-item { width: 160px; padding: 0 15px; }
+            .brands-slider { width: calc(160px * 20); }
+            @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-160px * 10)); }
+            }
+
+            .products { padding: 60px 0; }
+            .main-showcase { padding: 30px 20px; border-radius: 25px; margin-bottom: 40px; }
+            .showcase-content h3 { font-size: 1.9rem; }
+            .showcase-content h3 span { font-size: 1.1rem; }
+            .showcase-content p { font-size: 1rem; }
+
+            .secondary-grid { grid-template-columns: 1fr; gap: 20px; }
+            .secondary-card { padding: 30px 20px; }
+
+            .differentials { padding: 60px 0; }
+            .diff-card { flex-direction: column; text-align: center; padding: 25px; gap: 12px; }
+            .diff-card:hover { transform: none; }
+
+            .testimonials { padding: 60px 0; }
+            .testimonial-card { padding: 30px 20px; }
+
+            .store-location { padding: 60px 0; }
+            .store-info h3 { font-size: 1.8rem; }
+
+            .final-cta { padding: 60px 0; }
+            .final-cta h2 { font-size: 2.2rem; }
+
+            footer { padding: 50px 0 20px; }
+            .footer-grid { text-align: center; gap: 35px; }
+            .social-icons { justify-content: center; }
+            .footer-links ul li a:hover { padding-left: 0; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 1.9rem; }
+            .hero-content p { font-size: 0.95rem; }
+            .section-title { font-size: 1.5rem; }
+            .showcase-content h3 { font-size: 1.5rem; }
+            .final-cta h2 { font-size: 1.7rem; }
+            .brand-item { width: 130px; }
+            .brands-slider { width: calc(130px * 20); }
+            @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-130px * 10)); }
+            }
+            .store-map iframe { height: 250px; }
         }
     </style>
 </head>
