@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Catálogo Elite | THOMAZ SPORTS</title>
+    <meta name="description" content="Exploração completa de equipamentos de Beach Tennis de alta performance.">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --primary-gold-hover: #b8962d;
+            --bg-light: #F4F6F8;
+            --bg-card: #FFFFFF;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border-color: #E0E0E0;
+            --shadow-premium: 0 15px 35px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body { 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 900; text-transform: uppercase; }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-card);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--primary-gold);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .logo img { height: 60px; transition: var(--transition); }
+        .btn-back {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: #eee;
+        }
+        .btn-back:hover { background: var(--primary-gold); color: #000; }
+
+        /* --- MAIN LAYOUT --- */
+        .main-wrapper {
+            display: grid;
+            grid-template-columns: 300px 1fr; /* Sidebar fixa e conteúdo fluido */
+            min-height: calc(100vh - 80px);
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 40px 25px;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar-section { margin-bottom: 40px; }
+        .sidebar-title {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: block;
+            border-bottom: 2px solid var(--primary-gold);
+            padding-bottom: 5px;
+            width: fit-content;
+        }
+
+        .filter-list { list-style: none; }
+        .filter-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .filter-item:hover { background: #f0f0f0; color: var(--text-main); }
+        .filter-item.active {
+            background: var(--primary-gold);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* --- CONTENT AREA --- */
+        .content { padding: 0; }
+
+        .catalog-hero {
+            background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), 
+                        url('https://images.unsplash.com/photo-1622279457486-62d797367792?q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .catalog-hero h1 { font-size: 3rem; margin-bottom: 10px; }
+        .catalog-hero h1 span { color: var(--primary-gold); }
+        .catalog-hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+
+        .products-section { padding: 50px 40px; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- ULTRA PREMIUM CARD --- */
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 25px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-premium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-gold);
+        }
+
+        /* Badge de Destaque */
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-gold);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 5px 12px;
+            border-radius: 10px;
+            z-index: 10;
+            text-transform: uppercase;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        .product-card:hover img { transform: scale(1.08); }
+
+        .product-brand {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            min-height: 50px;
+            line-height: 1.2;
+        }
+
+        /* SPEC GRID - MELHORADO */
+        .product-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #fcfcfc;
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+        }
+
+        .spec-item i { font-size: 0.9rem; color: var(--primary-gold); }
+        .spec-value { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn-buy {
+            background-color: var(--primary-gold);
+            color: #000;
+            padding: 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-buy:hover {
+            background-color: var(--primary-gold-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* LOADING */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            width: 100%;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-top: 5px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 1100px) {
+            .main-wrapper { grid-template-columns: 250px 1fr; }
+        }
+
+        @media (max-width: 992px) {
+            .main-wrapper { grid-template-columns: 1fr; }
+            aside {
+                display: none; /* Esconde sidebar no mobile para usar menu suspenso ou similar */
+            }
+            .catalog-hero { padding: 40px 20px; }
+            .products-section { padding: 30px 20px; }
+        }
+
+        @media (max-width: 768px) {
+            .catalog-hero h1 { font-size: 2rem; }
+            .products-grid { grid-template-columns: 1fr; }
+            .product-specs { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Voltar para Início
+                </a>
+                <a href="index.html" class="logo">
+                    <img src="logo.jpg" alt="THOMAZ SPORTS LOGO">
+                </a>
+                <div style="width: 120px;"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <!-- SIDEBAR DE FILTROS -->
+        <aside>
+            <div class="sidebar-section">
+                <span class="sidebar-title">Categorias</span>
+                <ul class="filter-list" id="category-filters">
+                    <li class="filter-item active" onclick="filterCategory('Todos', this)">
+                        Todos <i class="fas fa-chevron-right"></i>
+                    </li>
+                    <li class="filter-item" onclick="filterCategory('Raquete', this)">
+                        Raquetes <i class="fas fa-chevron-right"></i>
+                    </li>
+                    <li class="filter-item" onclick="filterCategory('Bola', this)">
+                        Bolas <i class="fas fa-chevron-right"></i>
+                    </li>
+                    <li class="filter-item" onclick="filterCategory('Acessório', this)">
+                        Acessórios <i class="fas fa-chevron-right"></i>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <span class="sidebar-title">Marcas Premium</span>
+                <ul class="filter-list" id="brand-filters">
+                    <!-- Injetado via JS -->
+                </ul>
+            </div>
+
+            <div class="sidebar-section" style="margin-top: 100px; background: #f9f9f9; padding: 20px; border-radius: 20px; border: 1px dashed var(--primary-gold);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    Dúvida na escolha?<br>
+                    <strong>Fale com um especialista!</strong>
+                </p>
+                <a href="https://wa.me/5511999999999" class="btn-buy" style="margin-top: 15px; padding: 12px; font-size: 0.7rem;">
+                    <i class="fab fa-whatsapp"></i> Consultoria
+                </a>
+            </div>
+        </aside>
+
+        <!-- ÁREA DE CONTEÚDO -->
+        <div class="content">
+            <section class="catalog-hero" data-aos="fade-in">
+                <h1>Catálogo <span>Elite</span></h1>
+                <p>A curadoria mais rigorosa de Beach Tennis do Brasil. Performance, potência e exclusividade em cada detalhe.</p>
+            </section>
+
+            <section class="products-section">
+                <div id="products-container" class="products-grid">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Sintonizando equipamentos de alta performance...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        const CONFIG = {
+            API_KEY: 'AIzaSyA-7LZCbtIrA6Wg_acpTCKo9-6AGXUow0Q', 
+            SHEET_ID: '1FJmiCRhQtc-rfspw9iF_Sv-bZlS2GemBB_OPsMPlSIc', 
+            RANGE: 'Página1!B:I', 
+            WHATSAPP_NUMBER: '5511999999999' 
+        };
+
+        let allProducts = [];
+        let activeBrand = 'Todos';
+        let activeCategory = 'Todos';
+
+        function formatImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/300';
+            if (url.includes('drive.google.com')) {
+                const regex = /\/d\/([a-zA-Z0-9_-]+)|id=([a-zA-Z0-9_-]+)/;
+                const match = url.match(regex);
+                if (match) {
+                    const id = match[1] || match[2];
+                    return `https://lh3.googleusercontent.com/d/${id}`;
+                }
+            }
+            return url;
+        }
+
+        async function fetchProducts() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${CONFIG.RANGE}?key=${CONFIG.API_KEY}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (!data.values || data.values.length === 0) throw new Error("Vazio");
+
+                const headers = data.values[0];
+                const rows = data.values.slice(1);
+
+                allProducts = rows.map(row => {
+                    let product = {};
+                    headers.forEach((header, index) => {
+                        product[header.toLowerCase()] = row[index];
+                    });
+                    return product;
+                });
+
+                createBrandFilters(allProducts);
+                renderProducts(allProducts);
+            } catch (error) {
+                console.error("Erro:", error);
+                document.getElementById('products-container').innerHTML = `<div class="loading-state"><p>Erro ao carregar catálogo.</p></div>`;
+            }
+        }
+
+        function createBrandFilters(products) {
+            const brandContainer = document.getElementById('brand-filters');
+            const brands = [...new Set(products.map(p => p.marca))].filter(Boolean).sort();
+            
+            const allBtn = document.createElement('li');
+            allBtn.className = 'filter-item active';
+            allBtn.innerHTML = `Todos <i class="fas fa-chevron-right"></i>`;
+            allBtn.onclick = () => {
+                document.querySelectorAll('#brand-filters .filter-item').forEach(b => b.classList.remove('active'));
+                allBtn.classList.add('active');
+                activeBrand = 'Todos';
+                applyFilters();
+            };
+            brandContainer.appendChild(allBtn);
+
+            brands.forEach(brand => {
+                const li = document.createElement('li');
+                li.className = 'filter-item';
+                li.innerHTML = `${brand} <i class="fas fa-chevron-right"></i>`;
+                li.onclick = () => {
+                    document.querySelectorAll('#brand-filters .filter-item').forEach(b => b.classList.remove('active'));
+                    li.classList.add('active');
+                    activeBrand = brand;
+                    applyFilters();
+                };
+                brandContainer.appendChild(li);
+            });
+        }
+
+        function filterCategory(cat, element) {
+            document.querySelectorAll('#category-filters .filter-item').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            activeCategory = cat;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let filtered = allProducts;
+            if (activeBrand !== 'Todos') filtered = filtered.filter(p => p.marca === activeBrand);
+            if (activeCategory !== 'Todos') {
+                filtered = filtered.filter(p => {
+                    const name = (p.nome || '').toLowerCase();
+                    return name.includes(activeCategory.toLowerCase());
+                });
+            }
+            renderProducts(filtered);
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = ''; 
+
+            if (products.length === 0) {
+                container.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">Nenhum item encontrado.</p>';
+                return;
+            }
+
+            const badges = ['Escolha do Pro', 'Mais Vendida', 'Alta Performance', 'Lançamento'];
+
+            products.forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index % 4) * 100);
+
+                const imageUrl = formatImageUrl(product.imagem || product.imagem_url);
+                const randomBadge = badges[Math.floor(Math.random() * badges.length)];
+
+                card.innerHTML = `
+                    <span class="product-badge">${randomBadge}</span>
+                    <img src="${imageUrl}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/300'">
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="product-brand">${product.marca || 'Premium'}</span>
+                            <h3 class="product-name">${product.nome || 'Produto'}</h3>
+                            
+                            <div class="product-specs">
+                                <div class="spec-item">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <span class="spec-value">${product.peso || 'N/A'}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-gem"></i>
+                                    <span class="spec-value">${product.material || 'N/A'}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-crosshairs"></i>
+                                    <span class="spec-value">${product.balance || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="product-price">R$ ${product.preco || '0,00'}</p>
+                            <button class="btn-buy" onclick="handleBuy('${product.nome}', '${product.marca}', '${product.preco}', '${product.peso}', '${product.material}', '${product.balance}')">
+                                <i class="fab fa-whatsapp"></i> Comprar Agora
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleBuy(nome, marca, preco, peso, material, balance) {
+            const message = `Olá! Tenho interesse no produto ${nome} (${marca}).\n\n` +
+                            `Especificações:\n- Peso: ${peso || 'N/A'}\n- Material: ${material || 'N/A'}\n- Balance: ${balance || 'N/A'}\n` +
+                            `Valor: R$ ${preco || '0,00'}.\n\nAinda tem em estoque?`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+</body>
+</html>
