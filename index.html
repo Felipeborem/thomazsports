@@ -490,9 +490,19 @@
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
 
-            .logo img { height: 50px; }
+            nav { flex-wrap: nowrap; gap: 10px; }
 
-            .nav-actions .btn { padding: 10px 18px !important; font-size: 0.75rem !important; }
+            .logo { flex-shrink: 0; }
+            .logo img { height: 38px; }
+
+            .nav-actions { flex-shrink: 0; }
+            .nav-actions .btn {
+                padding: 8px 14px !important;
+                font-size: 0.68rem !important;
+                white-space: nowrap;
+                letter-spacing: 0.5px;
+            }
+            .nav-actions .btn i { margin-right: 4px; }
 
             .hero { height: 100vh; min-height: 600px; padding-top: 100px; }
             .hero-content h1 { font-size: 2.4rem; }
@@ -539,6 +549,11 @@
         }
 
         @media (max-width: 480px) {
+            .logo img { height: 32px; }
+            .nav-actions .btn {
+                padding: 7px 10px !important;
+                font-size: 0.6rem !important;
+            }
             .hero-content h1 { font-size: 1.9rem; }
             .hero-content p { font-size: 0.95rem; }
             .section-title { font-size: 1.5rem; }
@@ -637,7 +652,7 @@
                         <h4>Bolas Profissionais</h4>
                         <p>Pressão calibrada e alta durabilidade para jogos de alto nível.</p>
                     </div>
-                    <a href="catalogo.html" class="btn btn-outline" style="padding: 12px 25px;">Catálogo</a>
+                    <a href="https://wa.me/27998912042" class="btn btn-outline" style="padding: 12px 25px;">Comprar</a>
                 </div>
 
                 <!-- Mochilas -->
@@ -647,7 +662,7 @@
                         <h4>Mochilas Térmicas</h4>
                         <p>Proteção avançada contra o calor para preservar sua raquete.</p>
                     </div>
-                    <a href="catalogo.html" class="btn btn-outline" style="padding: 12px 25px;">Catálogo</a>
+                    <a href="https://wa.me/27998912042" class="btn btn-outline" style="padding: 12px 25px;">Comprar</a>
                 </div>
 
                 <!-- Acessórios -->
@@ -657,7 +672,7 @@
                         <h4>Acessórios Elite</h4>
                         <p>Overgrips, bonés e munhequeiras para o conforto total.</p>
                     </div>
-                    <a href="catalogo.html" class="btn btn-outline" style="padding: 12px 25px;">Catálogo</a>
+                    <a href="https://wa.me/27998912042" class="btn btn-outline" style="padding: 12px 25px;">Comprar</a>
                 </div>
             </div>
         </div>
@@ -827,7 +842,7 @@
                     <h4>Contato</h4>
                     <ul>
                         <li><a href="mailto:contato@thomazsports.com"><i class="fas fa-envelope"></i> contato@thomazsports.com</a></li>
-                        <li><a href="tel:27998912042"><i class="fas fa-phone"></i> (27) 99891-2042</a></li>
+                        <li><a href="tel:11999999999"><i class="fas fa-phone"></i> (27) 99891-2042</a></li>
                         <li><a href="#"><i class="fas fa-location-dot"></i> Cariacica, ES - Brasil</a></li>
                     </ul>
                 </div>
