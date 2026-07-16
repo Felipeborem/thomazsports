@@ -795,7 +795,7 @@
                     if (product.material) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-gem"></i> Material</span><span class="tech-value">${product.material}</span></div>`;
                     if (product['tem tratamento']) {
                         const isTratado = product['tem tratamento'].toLowerCase() === 'sim';
-                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas ${isTratado ? 'fa-magic' : 'fa-times-circle'}"></i> Tratamento Profissional</span><span class="tech-value">${product['tem tratamento'].toUpperCase()}</span></div>`;
+                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas ${isTratado ? 'fa-magic' : 'fa-times-circle'}"></i> Tratamento</span><span class="tech-value">${product['tem tratamento'].toUpperCase()}</span></div>`;
                     }
                     specsHTML = `<div class="tech-sheet">${specsHTML}</div>`;
                 }
