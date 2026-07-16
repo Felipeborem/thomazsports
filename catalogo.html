@@ -22,7 +22,7 @@
             --text-main: #111111;
             --text-muted: #666666;
             --border-color: #E0E0E0;
-            --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -60,7 +60,7 @@
         /* --- LAYOUT --- */
         .main-wrapper { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 80px); }
 
-        /* --- SIDEBAR (Desktop) --- */
+        /* --- SIDEBAR --- */
         aside {
             background: var(--deep-gray);
             color: #fff;
@@ -69,7 +69,6 @@
             top: 80px;
             height: calc(100vh - 80px);
             overflow-y: auto;
-            transition: var(--transition);
         }
         .sidebar-section { margin-bottom: 35px; }
         .sidebar-title {
@@ -106,7 +105,7 @@
             border-radius: 10px;
         }
 
-        /* --- MOBILE FILTER DRAWER --- */
+        /* --- MOBILE DRAWER --- */
         .mobile-filter-btn {
             display: none;
             position: fixed;
@@ -136,7 +135,6 @@
             z-index: 2000;
             transition: var(--transition);
             padding: 40px 25px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
         .mobile-drawer.open { left: 0; }
         .drawer-overlay {
@@ -146,11 +144,11 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            z-index: 1 same;
+            z-index: 1999;
             display: none;
             backdrop-filter: blur(4px);
         }
-        .drawer-overlay.open { display: block; z-index: 1 same; }
+        .drawer-overlay.open { display: block; }
         .close-drawer {
             background: none;
             border: none;
@@ -193,11 +191,9 @@
             background: rgba(0,0,0,0.5);
             z-index: -1;
         }
-        .catalog-hero h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .catalog-hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
         .catalog-hero h1 span { color: var(--primary-gold); }
-        .catalog-hero p { color: #ddd; font-size: 1.2rem; max-width: 700px; margin: 0 auto; padding: 0 20px; }
 
-        /* TOOLBAR */
         .catalog-toolbar {
             background: #fff;
             padding: 20px 40px;
@@ -218,28 +214,13 @@
             flex: 1;
             max-width: 500px;
         }
-        .search-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            width: 100%;
-            margin-left: 10px;
-            font-size: 0.9rem;
-        }
-        .sort-select {
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            background: #fff;
-            font-size: 0.85rem;
-            cursor: pointer;
-            outline: none;
-        }
+        .search-box input { background: transparent; border: none; outline: none; width: 100%; margin-left: 10px; font-size: 0.9rem; }
+        .sort-select { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-color); background: #fff; font-size: 0.85rem; cursor: pointer; }
 
         .products-section { padding: 40px; }
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 30px;
         }
 
@@ -247,75 +228,190 @@
         .product-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 30px;
-            padding: 25px;
+            border-radius: 35px;
+            padding: 30px;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             box-shadow: var(--shadow-premium);
         }
-        .product-card:hover { transform: translateY(-10px); border-color: var(--primary-gold); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; height: 260px; object-fit: contain; margin-bottom: 20px; transition: var(--transition); }
+        .product-card:hover { transform: translateY(-10px); border-color: var(--primary-gold); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15); }
+        .product-card img { width: 100%; height: 280px; object-fit: contain; margin-bottom: 25px; transition: var(--transition); }
         .product-card:hover img { transform: scale(1.05); }
 
         .product-brand {
-            font-size: 1.1rem; 
+            font-size: 0.85rem; 
             font-weight: 800;
             color: var(--primary-gold);
             text-transform: uppercase;
-            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
             display: block;
+            text-align: center;
         }
         .product-name {
-            font-size: 1.6rem; 
+            font-size: 2.2rem; 
             font-weight: 900;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: var(--dark-black); 
-            min-height: 55px;
-            line-height: 1.2;
+            min-height: 60px;
+            line-height: 1.1;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .product-specs {
+        /* --- FICHA TÉCNICA --- */
+        .tech-sheet {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            background: #f9f9f9;
-            padding: 18px;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #fcfcfc;
+            border: 1px solid #f0f0f0;
             border-radius: 20px;
-            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 15px;
+            background: white;
             border: 1px solid #eee;
         }
-        .spec-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; color: var(--text-main); font-weight: 600; }
-        .spec-item i { color: var(--primary-gold); width: 20px; text-align: center; }
+        .tech-label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tech-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-black);
+        }
+        .tech-item.highlight {
+            grid-column: span 2;
+            background: rgba(212, 175, 55, 0.05);
+            border-color: var(--primary-gold);
+        }
 
-        .product-price {
-            font-size: 2.2rem;
+        /* --- SELETORES DE VESTUÁRIO --- */
+        .clothing-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .option-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .option-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .chip {
+            padding: 8px 16px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+        .chip.active {
+            border-color: var(--primary-gold);
+            background: var(--primary-gold);
+            color: white;
+        }
+
+        /* PRICE BOX PREMIUM */
+        .price-wrapper {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 25px;
+            background: #fafafa;
+            border: 1px solid #efefef;
+        }
+        .cash-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .price-cash {
+            font-size: 2.8rem;
             font-weight: 900;
             color: var(--dark-black);
-            margin-bottom: 20px;
-            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .price-divider {
+            width: 50px;
+            height: 3px;
+            background: var(--primary-gold);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        .price-installments {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .price-installments span {
+            color: var(--dark-black);
+            font-weight: 800;
         }
 
         .btn-buy {
             background-color: var(--dark-black);
             color: var(--primary-gold);
-            padding: 18px;
+            padding: 22px;
             border-radius: 20px;
             text-decoration: none;
             font-weight: 800;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             transition: var(--transition);
             cursor: pointer;
             border: 2px solid var(--primary-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         .btn-buy:hover { background-color: var(--primary-gold); color: #000; transform: translateY(-3px); }
 
-        /* WHATSAPP POPUP */
         .whatsapp-popup {
             position: fixed;
             bottom: 30px;
@@ -335,8 +431,6 @@
             text-decoration: none;
             animation: pulse 2s infinite;
         }
-        .whatsapp-popup:hover { transform: scale(1.1); background-color: #128C7E; }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
@@ -347,23 +441,21 @@
         .spinner { width: 50px; height: 50px; border: 5px solid var(--border-color); border-top: 5px solid var(--primary-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- RESPONSIVIDADE TOTAL --- */
         @media (max-width: 992px) {
             .main-wrapper { grid-template-columns: 1fr; }
             aside { display: none; }
             .mobile-filter-btn { display: flex; }
             .catalog-toolbar { flex-direction: column; align-items: stretch; padding: 20px; }
-            .search-box { max-width: 100%; }
             .catalog-hero { height: 300px; }
-            .catalog-hero h1 { font-size: 2.2rem; }
             .products-section { padding: 20px; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
         }
         
-        @media (max-width: 480px) {
-            .catalog-hero h1 { font-size: 1.8rem; }
-            .product-name { font-size: 1.3rem; }
-            .product-price { font-size: 1.8rem; }
+        @media (max-width: 600px) {
+            .product-card { padding: 20px; }
+            .product-name { font-size: 1.7rem; }
+            .tech-sheet { grid-template-columns: 1fr; }
+            .tech-item.highlight { grid-column: span 1; }
+            .price-cash { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -380,7 +472,6 @@
     </header>
 
     <div class="main-wrapper">
-        <!-- SIDEBAR DESKTOP -->
         <aside id="desktop-sidebar">
             <div class="sidebar-section">
                 <span class="sidebar-title">Categorias</span>
@@ -388,7 +479,6 @@
                     <li class="filter-item active" onclick="setFilter('categoria', 'Todos', this)">Todos</li>
                 </ul>
             </div>
-
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
                 <ul class="filter-list">
@@ -398,24 +488,20 @@
                     <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000 <span class="count-badge" id="count-premium">0</span></li>
                 </ul>
             </div>
-
             <div class="sidebar-section">
                 <span class="sidebar-title">Marcas</span>
                 <ul class="filter-list" id="brand-filters"></ul>
             </div>
-
             <div class="sidebar-section">
                 <span class="sidebar-title">Ano</span>
                 <ul class="filter-list" id="year-filters"></ul>
             </div>
-
             <div class="sidebar-section">
                 <span class="sidebar-title">Material</span>
                 <ul class="filter-list" id="material-filters"></ul>
             </div>
         </aside>
 
-        <!-- MOBILE DRAWER (Lado Esquerdo) -->
         <div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
         <div class="mobile-drawer" id="mobile-drawer">
             <button class="close-drawer" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
@@ -497,7 +583,7 @@
         const CONFIG = {
             API_KEY: 'AIzaSyA-7LZCbtIrA6Wg_acpTCKo9-6AGXUow0Q', 
             SHEET_ID: '1Q56_9fPQy9tkYmOuhCTfnuxC3Ofc93VckerFnA1PpGE', 
-            RANGE: 'Página1!B:K', 
+            RANGE: 'Página1!B:P', // Expandido para pegar Tamanhos e Cores
             WHATSAPP_NUMBER: '27998912042' 
         };
 
@@ -530,16 +616,39 @@
                 const data = await response.json();
                 if (!data.values) throw new Error();
 
-                const headers = data.values[0].map(h => h.toLowerCase().trim());
+                const rawHeaders = data.values[0].map(h => h.toLowerCase().trim());
+                
+                // MAPA DE TRADUÇÃO: Coluna da Planilha -> Nome técnico no JS
+                const mapping = {
+                    "qual tipo de produto?": "tipo_produto",
+                    "preco": "preco",
+                    "preço parcelado": "preco_parcelado",
+                    "tem tratamento": "tem_tratamento",
+                    "nome": "nome",
+                    "marca": "marca",
+                    "imagem": "imagem",
+                    "categoria": "categoria",
+                    "peso": "peso",
+                    "material": "material",
+                    "balance": "balance",
+                    "ano": "ano",
+                    "tamanhos": "tamanhos",
+                    "cores": "cores"
+                };
+
                 allProducts = data.values.slice(1).map(row => {
                     let p = {};
-                    headers.forEach((h, i) => p[h] = row[i]);
+                    rawHeaders.forEach((header, i) => {
+                        const technicalName = mapping[header] || header;
+                        p[technicalName] = row[i];
+                    });
                     return p;
                 });
 
                 initDynamicFilters();
                 applyFilters();
             } catch (e) {
+                console.error(e);
                 document.getElementById('products-container').innerHTML = '<div class="loading-state"><p>Erro ao carregar dados.</p></div>';
             }
         }
@@ -547,7 +656,6 @@
         function initDynamicFilters() {
             const setupFilter = (idDesktop, idMobile, key) => {
                 const values = [...new Set(allProducts.map(p => p[key]))].filter(Boolean).sort();
-                
                 const createItem = (val, isAll = false) => {
                     const li = document.createElement('li');
                     li.className = `filter-item ${isAll ? 'active' : ''}`;
@@ -556,23 +664,20 @@
                     li.onclick = () => setFilter(key, isAll ? 'Todos' : val, li);
                     return li;
                 };
-
                 const dContainer = document.getElementById(idDesktop);
                 const mContainer = document.getElementById(idMobile);
-                
                 dContainer.appendChild(createItem(null, true));
                 mContainer.appendChild(createItem(null, true));
-
                 values.forEach(val => {
                     dContainer.appendChild(createItem(val));
                     mContainer.appendChild(createItem(val));
                 });
             };
 
-            // Categorias
             const catD = document.getElementById('cat-filters');
             const catM = document.getElementById('cat-filters-mobile');
-            ['Raquete', 'Bola', 'Acessório'].forEach(cat => {
+            const categories = [...new Set(allProducts.map(p => p.categoria))].filter(Boolean);
+            categories.forEach(cat => {
                 const count = allProducts.filter(p => p.categoria === cat).length;
                 const item = (container) => {
                     const li = document.createElement('li');
@@ -607,13 +712,10 @@
 
         function setFilter(key, value, element) {
             filters[key] = value;
-            // Sincroniza a classe active entre desktop e mobile
             document.querySelectorAll('.filter-item').forEach(li => {
                 if(li.textContent.includes(value)) li.classList.add('active');
                 else if(!li.textContent.includes('Todos')) li.classList.remove('active');
             });
-            
-            // Se for mobile, fecha o drawer após filtrar
             if(window.innerWidth <= 992) toggleDrawer();
             applyFilters();
         }
@@ -627,16 +729,13 @@
                 const matchCat = filters.categoria === 'Todos' || (p.categoria && p.categoria.toLowerCase().includes(filters.categoria.toLowerCase()));
                 const matchYear = filters.ano === 'Todos' || p.ano === filters.ano;
                 const matchMat = filters.material === 'Todos' || p.material === filters.material;
-                
                 let matchPrice = true;
                 const pr = parsePrice(p.preco);
                 if (filters.preco === 'baixo') matchPrice = pr > 0 && pr <= 100;
                 else if (filters.preco === 'medio') matchPrice = pr > 100 && pr <= 999;
                 else if (filters.preco === 'alto') matchPrice = pr > 999 && pr <= 2000;
                 else if (filters.preco === 'premium') matchPrice = pr > 2000;
-
                 const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || '').toLowerCase().includes(searchTerm);
-
                 return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
             });
 
@@ -650,7 +749,6 @@
         function renderProducts(products) {
             const container = document.getElementById('products-container');
             container.innerHTML = ''; 
-
             if (products.length === 0) {
                 container.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1; padding: 50px;">Nenhum produto encontrado.</p>';
                 return;
@@ -662,22 +760,57 @@
                 card.setAttribute('data-aos', 'fade-up');
                 card.setAttribute('data-aos-delay', (index % 4) * 100);
 
+                const isClothing = (product.tipo_produto || '').toLowerCase().includes('vestuário');
                 let specsHTML = '';
-                if (product.peso) specsHTML += `<div class="spec-item"><i class="fas fa-weight-hanging"></i><span class="spec-value">${product.peso}</span></div>`;
-                if (product.material) specsHTML += `<div class="spec-item"><i class="fas fa-gem"></i><span class="spec-value">${product.material}</span></div>`;
-                if (product.balance) specsHTML += `<div class="spec-item"><i class="fas fa-ruler-combined"></i><span class="spec-value">${product.balance}</span></div>`;
+
+                if (isClothing) {
+                    const sizes = (product.tamanhos || '').split(',').map(s => s.trim());
+                    const colors = (product.cores || '').split(',').map(c => c.trim());
+                    specsHTML = `
+                        <div class="clothing-options">
+                            <div class="option-group">
+                                <span class="option-label">Tamanho</span>
+                                <div class="option-chips" data-type="size">
+                                    ${sizes.map(s => s ? `<div class="chip" onclick="selectOption(this, 'size', ${index})">${s}</div>` : '').join('')}
+                                </div>
+                            </div>
+                            <div class="option-group">
+                                <span class="option-label">Cores Disponíveis</span>
+                                <div class="option-chips" data-type="color">
+                                    ${colors.map(c => c ? `<div class="chip" onclick="selectOption(this, 'color', ${index})">${c}</div>` : '').join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    if (product.peso) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-weight-hanging"></i> Peso</span><span class="tech-value">${product.peso}</span></div>`;
+                    if (product.balance) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-ruler-combined"></i> Balance</span><span class="tech-value">${product.balance}</span></div>`;
+                    if (product.material) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-gem"></i> Material</span><span class="tech-value">${product.material}</span></div>`;
+                    if (product.tem_tratamento) {
+                        const isTratado = product.tem_tratamento.toLowerCase() === 'sim';
+                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas ${isTratado ? 'fa-magic' : 'fa-times-circle'}"></i> Tratamento Profissional</span><span class="tech-value">${product.tem_tratamento.toUpperCase()}</span></div>`;
+                    }
+                    specsHTML = `<div class="tech-sheet">${specsHTML}</div>`;
+                }
+
+                const precoVista = product.preco || '0,00';
+                const precoParcelado = product.preco_parcelado || '';
 
                 card.innerHTML = `
                     <img src="${formatImageUrl(product.imagem || product.imagem_url)}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/300'">
                     <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
+                        <div style="text-align: center;">
                             <span class="product-brand">${product.marca || 'Premium'} ${product.ano ? ' | ' + product.ano : ''}</span>
                             <h3 class="product-name">${product.nome || 'Produto'}</h3>
-                            ${specsHTML ? `<div class="product-specs">${specsHTML}</div>` : ''}
+                            ${specsHTML}
                         </div>
-                        <div style="text-align: center;">
-                            <p class="product-price">R$ ${product.preco || '0,00'}</p>
-                            <button class="btn-buy" onclick="handleBuy('${product.nome}', '${product.marca}', '${product.preco}', '${product.peso}', '${product.material}', '${product.balance}', '${product.ano}')">
+                        <div style="margin-top: 20px;">
+                            <div class="price-wrapper">
+                                <span class="cash-label">Oferta Exclusiva à Vista</span>
+                                <div class="price-cash">R$ ${precoVista}</div>
+                                ${precoParcelado ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-credit-card"></i>Ou em até 12x <span>${precoParcelado}</span></div>` : ''}
+                            </div>
+                            <button class="btn-buy" onclick="handleBuy(${index})">
                                 <i class="fab fa-whatsapp"></i> Comprar Agora
                             </button>
                         </div>
@@ -687,12 +820,25 @@
             });
         }
 
-        function handleBuy(nome, marca, preco, peso, material, balance, ano) {
-            const message = `Olá! Tenho interesse no produto ${nome} (${marca} ${ano || ''}).\n\n` +
-                            `Especificações:\n${peso ? '- Peso: ' + peso + '\n' : ''}` +
-                            `${material ? '- Material: ' + material + '\n' : ''}` +
-                            `${balance ? '- Balance: ' + balance + '\n' : ''}` +
-                            `Valor: R$ ${preco || '0,00'}.\n\nAinda tem em estoque?`;
+        const userSelections = {};
+        function selectOption(element, type, productIndex) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            if(!userSelections[productIndex]) userSelections[productIndex] = {};
+            userSelections[productIndex][type] = element.textContent;
+        }
+
+        function handleBuy(index) {
+            const product = allProducts[index];
+            const selection = userSelections[index] || {};
+            let specDetails = '';
+            if ((product.tipo_produto || '').toLowerCase().includes('vestuário')) {
+                specDetails = `- Tamanho: ${selection.size || 'Não informado'}\n- Cor: ${selection.color || 'Não informado'}`;
+            } else {
+                specDetails = `${product.peso ? '- Peso: ' + product.peso + '\n' : ''}${product.balance ? '- Balance: ' + product.balance + '\n' : ''}${product.material ? '- Material: ' + product.material + '\n' : ''}${product.tem_tratamento ? '- Tratamento: ' + product.tem_tratamento + '\n' : ''}`;
+            }
+            const message = `Olá! Tenho interesse no produto ${product.nome} (${product.marca}).\n\nDetalhes:\n${specDetails}\nValor à Vista: R$ ${product.preco}\n${product.preco_parcelado ? 'Valor Parcelado: em até 12x ' + product.preco_parcelado + '\n' : ''}\n\nAinda tem em estoque?`;
             window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
