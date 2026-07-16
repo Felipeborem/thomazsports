@@ -583,7 +583,7 @@
         const CONFIG = {
             API_KEY: 'AIzaSyA-7LZCbtIrA6Wg_acpTCKo9-6AGXUow0Q', 
             SHEET_ID: '1Q56_9fPQy9tkYmOuhCTfnuxC3Ofc93VckerFnA1PpGE', 
-            RANGE: 'Página1!B:P', // Expandido para pegar Tamanhos e Cores
+            RANGE: 'Página1!B:S', // Expandido para cobrir todas as colunas incluindo vestuário
             WHATSAPP_NUMBER: '27998912042' 
         };
 
@@ -616,31 +616,13 @@
                 const data = await response.json();
                 if (!data.values) throw new Error();
 
-                const rawHeaders = data.values[0].map(h => h.toLowerCase().trim());
+                // Limpeza rigorosa de cabeçalhos (Remove aspas e quebras de linha \n)
+                const rawHeaders = data.values[0].map(h => h.replace(/["']/g, '').replace(/\n/g, '').toLowerCase().trim());
                 
-                // MAPA DE TRADUÇÃO: Coluna da Planilha -> Nome técnico no JS
-                const mapping = {
-                    "qual tipo de produto?": "tipo_produto",
-                    "preco": "preco",
-                    "preço parcelado": "preco_parcelado",
-                    "tem tratamento": "tem_tratamento",
-                    "nome": "nome",
-                    "marca": "marca",
-                    "imagem": "imagem",
-                    "categoria": "categoria",
-                    "peso": "peso",
-                    "material": "material",
-                    "balance": "balance",
-                    "ano": "ano",
-                    "tamanhos": "tamanhos",
-                    "cores": "cores"
-                };
-
                 allProducts = data.values.slice(1).map(row => {
                     let p = {};
                     rawHeaders.forEach((header, i) => {
-                        const technicalName = mapping[header] || header;
-                        p[technicalName] = row[i];
+                        p[header] = row[i];
                     });
                     return p;
                 });
@@ -648,7 +630,7 @@
                 initDynamicFilters();
                 applyFilters();
             } catch (e) {
-                console.error(e);
+                console.error("Erro ao carregar dados:", e);
                 document.getElementById('products-container').innerHTML = '<div class="loading-state"><p>Erro ao carregar dados.</p></div>';
             }
         }
@@ -698,7 +680,9 @@
         function updatePriceCounts() {
             const counts = { baixo: 0, medio: 0, alto: 0, premium: 0 };
             allProducts.forEach(p => {
-                const pr = parsePrice(p.preco);
+                // Para o filtro, usamos o preço à vista (independente se é roupa ou raquete)
+                const priceVal = p['tipo de produto']?.toLowerCase().includes('vestuário') ? p['preco_vestuario'] : p['preco'];
+                const pr = parsePrice(priceVal);
                 if (pr > 0 && pr <= 100) counts.baixo++;
                 else if (pr > 100 && pr <= 999) counts.medio++;
                 else if (pr > 999 && pr <= 2000) counts.alto++;
@@ -725,22 +709,33 @@
             const sortBy = document.getElementById('sortSelect').value;
 
             let filtered = allProducts.filter(p => {
-                const matchBrand = filters.marca === 'Todos' || p.marca === filters.marca;
+                const matchBrand = filters.marca === 'Todos' || (p.marca || p.marca_vestuario) === filters.marca;
                 const matchCat = filters.categoria === 'Todos' || (p.categoria && p.categoria.toLowerCase().includes(filters.categoria.toLowerCase()));
                 const matchYear = filters.ano === 'Todos' || p.ano === filters.ano;
                 const matchMat = filters.material === 'Todos' || p.material === filters.material;
+                
                 let matchPrice = true;
-                const pr = parsePrice(p.preco);
+                const priceVal = p['tipo de produto']?.toLowerCase().includes('vestuário') ? p['preco_vestuario'] : p['preco'];
+                const pr = parsePrice(priceVal);
                 if (filters.preco === 'baixo') matchPrice = pr > 0 && pr <= 100;
                 else if (filters.preco === 'medio') matchPrice = pr > 100 && pr <= 999;
                 else if (filters.preco === 'alto') matchPrice = pr > 999 && pr <= 2000;
                 else if (filters.preco === 'premium') matchPrice = pr > 2000;
-                const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || '').toLowerCase().includes(searchTerm);
+
+                const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || p.marca_vestuario || '').toLowerCase().includes(searchTerm);
                 return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
             });
 
-            if (sortBy === 'low') filtered.sort((a, b) => parsePrice(a.preco) - parsePrice(b.preco));
-            else if (sortBy === 'high') filtered.sort((a, b) => parsePrice(b.preco) - parsePrice(a.preco));
+            if (sortBy === 'low') filtered.sort((a, b) => {
+                const pA = parsePrice(a['tipo de produto']?.toLowerCase().includes('vestuário') ? a['preco_vestuario'] : a['preco']);
+                const pB = parsePrice(b['tipo de produto']?.toLowerCase().includes('vestuário') ? b['preco_vestuario'] : b['preco']);
+                return pA - pB;
+            });
+            else if (sortBy === 'high') filtered.sort((a, b) => {
+                const pA = parsePrice(a['tipo de produto']?.toLowerCase().includes('vestuário') ? a['preco_vestuario'] : a['preco']);
+                const pB = parsePrice(b['tipo de produto']?.toLowerCase().includes('vestuário') ? b['preco_vestuario'] : b['preco']);
+                return pB - pA;
+            });
             else if (sortBy === 'name') filtered.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
             renderProducts(filtered);
@@ -760,9 +755,15 @@
                 card.setAttribute('data-aos', 'fade-up');
                 card.setAttribute('data-aos-delay', (index % 4) * 100);
 
-                const isClothing = (product.tipo_produto || '').toLowerCase().includes('vestuário');
-                let specsHTML = '';
+                const isClothing = (product['qual tipo de produto?'] || '').toLowerCase().includes('vestuário');
+                
+                // --- DEFINIÇÃO DE VALORES DINÂMICOS ---
+                const finalBrand = isClothing ? (product.marca_vestuario || product.marca) : product.marca;
+                const finalImage = isClothing ? (product.imagem_vestuario || product.imagem) : product.imagem;
+                const finalPrice = isClothing ? product.preco_vestuario : product.preco;
+                const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product['preço parcelado'];
 
+                let specsHTML = '';
                 if (isClothing) {
                     const sizes = (product.tamanhos || '').split(',').map(s => s.trim());
                     const colors = (product.cores || '').split(',').map(c => c.trim());
@@ -786,29 +787,26 @@
                     if (product.peso) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-weight-hanging"></i> Peso</span><span class="tech-value">${product.peso}</span></div>`;
                     if (product.balance) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-ruler-combined"></i> Balance</span><span class="tech-value">${product.balance}</span></div>`;
                     if (product.material) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-gem"></i> Material</span><span class="tech-value">${product.material}</span></div>`;
-                    if (product.tem_tratamento) {
-                        const isTratado = product.tem_tratamento.toLowerCase() === 'sim';
-                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas ${isTratado ? 'fa-magic' : 'fa-times-circle'}"></i> Tratamento Profissional</span><span class="tech-value">${product.tem_tratamento.toUpperCase()}</span></div>`;
+                    if (product['tem tratamento']) {
+                        const isTratado = product['tem tratamento'].toLowerCase() === 'sim';
+                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas ${isTratado ? 'fa-magic' : 'fa-times-circle'}"></i> Tratamento Profissional</span><span class="tech-value">${product['tem tratamento'].toUpperCase()}</span></div>`;
                     }
                     specsHTML = `<div class="tech-sheet">${specsHTML}</div>`;
                 }
 
-                const precoVista = product.preco || '0,00';
-                const precoParcelado = product.preco_parcelado || '';
-
                 card.innerHTML = `
-                    <img src="${formatImageUrl(product.imagem || product.imagem_url)}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/300'">
+                    <img src="${formatImageUrl(finalImage)}" alt="${product.nome}" onerror="this.src='https://via.placeholder.com/300'">
                     <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                         <div style="text-align: center;">
-                            <span class="product-brand">${product.marca || 'Premium'} ${product.ano ? ' | ' + product.ano : ''}</span>
+                            <span class="product-brand">${finalBrand || 'Premium'} ${product.ano ? ' | ' + product.ano : ''}</span>
                             <h3 class="product-name">${product.nome || 'Produto'}</h3>
                             ${specsHTML}
                         </div>
                         <div style="margin-top: 20px;">
                             <div class="price-wrapper">
                                 <span class="cash-label">Oferta Exclusiva à Vista</span>
-                                <div class="price-cash">R$ ${precoVista}</div>
-                                ${precoParcelado ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-credit-card"></i>Ou em até 12x <span>${precoParcelado}</span></div>` : ''}
+                                <div class="price-cash">R$ ${finalPrice || '0,00'}</div>
+                                ${finalPricePart ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-credit-card"></i> em até 12x <span>${finalPricePart}</span></div>` : ''}
                             </div>
                             <button class="btn-buy" onclick="handleBuy(${index})">
                                 <i class="fab fa-whatsapp"></i> Comprar Agora
@@ -832,14 +830,31 @@
         function handleBuy(index) {
             const product = allProducts[index];
             const selection = userSelections[index] || {};
+            const isClothing = (product['qual tipo de produto?'] || '').toLowerCase().includes('vestuário');
+            
+            const finalBrand = isClothing ? (product.marca_vestuario || product.marca) : product.marca;
+            const finalPrice = isClothing ? product.preco_vestuario : product.preco;
+            const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product['preço parcelado'];
+
             let specDetails = '';
-            if ((product.tipo_produto || '').toLowerCase().includes('vestuário')) {
+            if (isClothing) {
                 specDetails = `- Tamanho: ${selection.size || 'Não informado'}\n- Cor: ${selection.color || 'Não informado'}`;
             } else {
-                specDetails = `${product.peso ? '- Peso: ' + product.peso + '\n' : ''}${product.balance ? '- Balance: ' + product.balance + '\n' : ''}${product.material ? '- Material: ' + product.material + '\n' : ''}${product.tem_tratamento ? '- Tratamento: ' + product.tem_tratamento + '\n' : ''}`;
+                specDetails = `${product.peso ? '- Peso: ' + product.peso + '\n' : ''}${product.balance ? '- Balance: ' + product.balance + '\n' : ''}${product.material ? '- Material: ' + product.material + '\n' : ''}${product['tem tratamento'] ? '- Tratamento: ' + product['tem tratamento'] + '\n' : ''}`;
             }
-            const message = `Olá! Tenho interesse no produto ${product.nome} (${product.marca}).\n\nDetalhes:\n${specDetails}\nValor à Vista: R$ ${product.preco}\n${product.preco_parcelado ? 'Valor Parcelado: em até 12x ' + product.preco_parcelado + '\n' : ''}\n\nAinda tem em estoque?`;
+
+            const message = `Olá! Tenho interesse no produto ${product.nome} (${finalBrand}).\n\nDetalhes:\n${specDetails}\nValor à Vista: R$ ${finalPrice}\n${finalPricePart ? 'Valor Parcelado: em até 12x ' + finalPricePart + '\n' : ''}\n\nAinda tem em estoque?`;
             window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function setFilter(key, value, element) {
+            filters[key] = value;
+            document.querySelectorAll('.filter-item').forEach(li => {
+                if(li.textContent.includes(value)) li.classList.add('active');
+                else if(!li.textContent.includes('Todos')) li.classList.remove('active');
+            });
+            if(window.innerWidth <= 992) toggleDrawer();
+            applyFilters();
         }
 
         document.addEventListener('DOMContentLoaded', fetchProducts);
