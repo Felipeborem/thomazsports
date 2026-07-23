@@ -1,0 +1,66 @@
+# 🏝️ Thomaz Sports
+
+Site institucional + catálogo dinâmico para a **Thomaz Sports**, loja especializada em equipamentos de **Beach Tennis** (raquetes, bolas, acessórios e vestuário), localizada em Cariacica – ES.
+
+O projeto foi construído como um site 100% front-end, com o **Google Sheets funcionando como CMS/banco de dados** dos produtos — sem necessidade de backend, servidor ou painel administrativo separado.
+
+## 🔗 Páginas
+
+| Página | Arquivo | Descrição |
+|---|---|---|
+| Home / Institucional | `index.html` | Landing page da marca: hero, marcas parceiras, produtos em destaque, diferenciais, depoimentos, loja física e CTA final |
+| Catálogo | `catalogo.html` | Catálogo completo de produtos, com busca, filtros e ordenação em tempo real |
+
+## ✨ Funcionalidades
+
+### Home (`index.html`)
+- Hero com identidade visual premium (paleta preto & dourado)
+- Slider infinito com as marcas parceiras (Adidas, Wilson, Head, Nox, Mormaii, entre outras)
+- Vitrine de produtos em destaque (raquetes, bolas, mochilas térmicas, acessórios)
+- Seção de diferenciais da loja (produtos originais, atendimento especializado, entrega rápida, parcelamento em até 12x sem juros)
+- Depoimentos de clientes
+- Seção da loja física com vídeo, endereço e mapa incorporado (Google Maps)
+- Botão flutuante de WhatsApp em todas as páginas
+- Animações suaves ao rolar a página (AOS.js)
+- Totalmente responsivo
+
+### Catálogo (`catalogo.html`)
+- **Integração em tempo real com Google Sheets**: os produtos são carregados diretamente de uma planilha via Google Sheets API — atualizar a planilha atualiza o site automaticamente, sem precisar mexer em código
+- Filtros dinâmicos por **categoria, marca, ano, material e faixa de preço**, gerados automaticamente a partir dos dados da planilha
+- Busca por nome ou marca em tempo real
+- Ordenação por menor preço, maior preço ou nome
+- Cards de produto adaptativos:
+  - **Equipamentos** (raquetes): exibem ficha técnica (peso, balance, material, tratamento)
+  - **Vestuário**: exibe seletor de tamanho e cor
+- Botão **"Comprar Agora"** que abre o WhatsApp com uma mensagem pré-formatada contendo nome do produto, marca, especificações e preço — reduzindo o atrito entre visualização e conversão
+- Menu de filtros em drawer lateral para dispositivos móveis
+
+## 🛠️ Tecnologias utilizadas
+
+- **HTML5** semântico
+- **CSS3** (variáveis CSS, Grid, Flexbox, animações e design responsivo)
+- **JavaScript (Vanilla)** — fetch API, manipulação de DOM, filtros e ordenação client-side
+- **Google Sheets API v4** — utilizada como fonte de dados dos produtos (CMS sem código)
+- **AOS.js** — animações on-scroll
+- **Font Awesome 6** — ícones
+- **Google Fonts** — Montserrat (títulos) e Poppins (texto)
+
+## 📐 Arquitetura de dados
+
+O catálogo não possui banco de dados tradicional. Os produtos são gerenciados em uma **planilha do Google Sheets**, lida via API pública (somente leitura) diretamente pelo JavaScript do site. Isso permite que a loja atualize preços, estoque e novos produtos sem depender de um desenvolvedor.
+
+```
+Google Sheets  →  Google Sheets API  →  JS (fetch)  →  Renderização dos cards no catálogo
+```
+
+## 📱 Contato / Conversão
+
+Toda a jornada de compra é direcionada para o **WhatsApp**, com mensagens automáticas já preenchidas com os dados do produto de interesse — simplificando a comunicação entre cliente e loja.
+
+## 🔒 Nota de segurança
+
+A chave da API do Google Sheets utilizada é somente leitura. Ainda assim, recomenda-se restringi-la por domínio (HTTP referrer) no Google Cloud Console para evitar uso indevido fora do site oficial.
+
+## 📄 Licença
+
+Projeto proprietário — todos os direitos reservados à Thomaz Sports © 2026.
