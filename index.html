@@ -122,32 +122,6 @@
             transition: var(--transition);
         }
 
-        .whatsapp-float {
-            position: fixed;
-            right: 25px;
-            bottom: 25px;
-            width: 62px;
-            height: 62px;
-            background-color: #25D366;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .whatsapp-float i {
-            color: var(--pure-white);
-            font-size: 2rem;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.08);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-        }
-
         /* Hero Section */
         .hero {
             height: 100vh;
@@ -158,13 +132,6 @@
             justify-content: center;
             text-align: center;
             padding-top: 80px;
-        }
-
-        .hero-logo {
-            width: clamp(240px, 32vw, 400px);
-            height: auto;
-            margin-bottom: 30px;
-            border-radius: 50%;
         }
 
         .hero-content h1 {
@@ -528,8 +495,16 @@
             .logo { flex-shrink: 0; }
             .logo img { height: 38px; }
 
+            .nav-actions { flex-shrink: 0; }
+            .nav-actions .btn {
+                padding: 8px 14px !important;
+                font-size: 0.68rem !important;
+                white-space: nowrap;
+                letter-spacing: 0.5px;
+            }
+            .nav-actions .btn i { margin-right: 4px; }
+
             .hero { height: 100vh; min-height: 600px; padding-top: 100px; }
-            .hero-logo { width: 260px; margin-bottom: 20px; }
             .hero-content h1 { font-size: 2.4rem; }
             .hero-content p { font-size: 1.05rem; margin-bottom: 30px; }
             .hero-btns { flex-direction: column; align-items: center; gap: 15px; }
@@ -575,9 +550,10 @@
 
         @media (max-width: 480px) {
             .logo img { height: 32px; }
-            .whatsapp-float { width: 54px; height: 54px; right: 18px; bottom: 18px; }
-            .whatsapp-float i { font-size: 1.7rem; }
-            .hero-logo { width: 200px; margin-bottom: 15px; }
+            .nav-actions .btn {
+                padding: 7px 10px !important;
+                font-size: 0.6rem !important;
+            }
             .hero-content h1 { font-size: 1.9rem; }
             .hero-content p { font-size: 0.95rem; }
             .section-title { font-size: 1.5rem; }
@@ -591,14 +567,9 @@
             }
             .store-map iframe { height: 250px; }
         }
-
     </style>
 </head>
 <body>
-
-    <a href="https://wa.me/27998912042" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
 
     <header id="header">
         <div class="container">
@@ -606,6 +577,11 @@
                 <a href="#" class="logo">
                     <img src="logo.jpg" alt="THOMAZ SPORTS LOGO">
                 </a>
+                <div class="nav-actions">
+                    <a href="https://wa.me/27998912042" class="btn btn-gold" style="padding: 12px 25px; font-size: 0.8rem;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
             </nav>
         </div>
     </header>
@@ -613,7 +589,6 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content" data-aos="fade-up">
-                <img src="logo.jpg" alt="THOMAZ SPORTS" class="hero-logo">
                 <h1>Os Melhores Equipamentos de <span>Beach Tennis</span> em um Só Lugar</h1>
                 <p>Raquetes, bolas, acessórios e vestuário das marcas mais desejadas pelos atletas. Performance e exclusividade para elevar o seu jogo.</p>
                 <div class="hero-btns">
@@ -711,7 +686,7 @@
                     <i class="fas fa-check-circle"></i>
                     <div>
                         <h4>Produtos Originais</h4>
-                        <p>Revendedor Aurorizado - Garantia total de autenticidade de todas as marcas parceiras.</p>
+                        <p>Revendedor Autorizado - Garantia total de autenticidade de todas as marcas parceiras.</p>
                     </div>
                 </div>
                 <div class="diff-card" data-aos="fade-right" data-aos-delay="100">
@@ -849,8 +824,8 @@
                     </div>
                     <p style="color: #aaa; font-size: 0.9rem; line-height: 1.6;">A referência em Beach Tennis. Equipamentos de alta performance para quem não aceita menos que a vitória.</p>
                     <div class="social-icons">
-                        <a href="https://www.instagram.com/thomazsports.bt/"><i class="fab fa-instagram"></i></a>
-                        <a href=""><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/thomazsports.bt/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/27998912042" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -867,7 +842,7 @@
                     <h4>Contato</h4>
                     <ul>
                         <li><a href="mailto:contato@thomazsports.com"><i class="fas fa-envelope"></i> contato@thomazsports.com</a></li>
-                        <li><a href="tel:11999999999"><i class="fas fa-phone"></i> (27) 99891-2042</a></li>
+                        <li><a href="tel:+5527998912042"><i class="fas fa-phone"></i> (27) 99891-2042</a></li>
                         <li><a href="#"><i class="fas fa-location-dot"></i> Cariacica, ES - Brasil</a></li>
                     </ul>
                 </div>
