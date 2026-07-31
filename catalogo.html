@@ -470,7 +470,7 @@
         }
     </style>
 </head>
-<body>
+<body >
 
     <header>
         <div class="container">
@@ -589,7 +589,7 @@
         const CONFIG = {
             API_KEY: 'AIzaSyA-7LZCbtIrA6Wg_acpTCKo9-6AGXUow0Q', 
             SHEET_ID: '1Q56_9fPQy9tkYmOuhCTfnuxC3Ofc93VckerFnA1PpGE', 
-            RANGE: 'Página1!B:S', // Expandido para cobrir todas as colunas incluindo vestuário
+            RANGE: 'Página1!B:S', 
             WHATSAPP_NUMBER: '27998912042' 
         };
 
@@ -622,7 +622,6 @@
                 const data = await response.json();
                 if (!data.values) throw new Error();
 
-                // Limpeza rigorosa de cabeçalhos (Remove aspas e quebras de linha \n)
                 const rawHeaders = data.values[0].map(h => h.replace(/["']/g, '').replace(/\n/g, '').toLowerCase().trim());
                 
                 allProducts = data.values.slice(1).map(row => {
@@ -686,7 +685,6 @@
         function updatePriceCounts() {
             const counts = { baixo: 0, medio: 0, alto: 0, premium: 0 };
             allProducts.forEach(p => {
-                // Para o filtro, usamos o preço à vista (independente se é roupa ou raquete)
                 const priceVal = p['tipo de produto']?.toLowerCase().includes('vestuário') ? p['preco_vestuario'] : p['preco'];
                 const pr = parsePrice(priceVal);
                 if (pr > 0 && pr <= 100) counts.baixo++;
@@ -715,6 +713,11 @@
             const sortBy = document.getElementById('sortSelect').value;
 
             let filtered = allProducts.filter(p => {
+                // --- REGRA DE VISIBILIDADE ---
+                // Se for 'não', esconde. Se for 'sim' ou estiver em branco, mostra.
+                const visibilidade = (p.visivel || '').toLowerCase();
+                if (visibilidade === 'não') return false;
+
                 const matchBrand = filters.marca === 'Todos' || (p.marca || p.marca_vestuario) === filters.marca;
                 const matchCat = filters.categoria === 'Todos' || (p.categoria && p.categoria.toLowerCase().includes(filters.categoria.toLowerCase()));
                 const matchYear = filters.ano === 'Todos' || p.ano === filters.ano;
@@ -729,6 +732,7 @@
                 else if (filters.preco === 'premium') matchPrice = pr > 2000;
 
                 const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || p.marca_vestuario || '').toLowerCase().includes(searchTerm);
+                
                 return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
             });
 
@@ -763,7 +767,6 @@
 
                 const isClothing = (product['qual tipo de produto?'] || '').toLowerCase().includes('vestuário');
                 
-                // --- DEFINIÇÃO DE VALORES DINÂMICOS ---
                 const finalBrand = isClothing ? (product.marca_vestuario || product.marca) : product.marca;
                 const finalImage = isClothing ? (product.imagem_vestuario || product.imagem) : product.imagem;
                 const finalPrice = isClothing ? product.preco_vestuario : product.preco;
@@ -853,17 +856,7 @@
             window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        function setFilter(key, value, element) {
-            filters[key] = value;
-            document.querySelectorAll('.filter-item').forEach(li => {
-                if(li.textContent.includes(value)) li.classList.add('active');
-                else if(!li.textContent.includes('Todos')) li.classList.remove('active');
-            });
-            if(window.innerWidth <= 992) toggleDrawer();
-            applyFilters();
-        }
-
         document.addEventListener('DOMContentLoaded', fetchProducts);
     </script>
-</body>
+</body >
 </html>
