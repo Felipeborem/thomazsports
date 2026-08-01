@@ -617,35 +617,54 @@
             return parseFloat(priceStr.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
         }
 
-        // NOVA FUNÇÃO DE FETCH: Usa exportação CSV (Mais seguro, sem API Key exposta)
-        async function fetchProducts() {
+
+
+
+                async function fetchProducts() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:csv`;
+                // Usamos o endpoint /gviz/tq que retorna JSON sem necessidade de API KEY
+                const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json`;
                 const response = await fetch(url);
                 const text = await response.text();
                 
-                // Converte CSV simples para Array de Objetos
-                const rows = text.split('\n').map(row => {
-                    return row.split('","').map(cell => cell.replace(/"/g, ''));
-                });
-
-                const rawHeaders = rows[0].map(h => h.replace(/"/g, '').toLowerCase().trim());
+                // O Google retorna o JSON envolto em uma função, precisamos limpar isso
+                const jsonString = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
+                const data = JSON.parse(jsonString);
                 
-                allProducts = rows.slice(1).map(row => {
+                const table = data.table;
+                const cols = table.cols; // Cabeçalhos
+                const rows = table.rows; // Dados
+
+                allProducts = rows.map(row => {
                     let p = {};
-                    rawHeaders.forEach((header, i) => {
-                        p[header] = row[i] || '';
+                    row.c.forEach((cell, i) => {
+                        // Pega o nome da coluna (header) e o valor da célula
+                        const header = cols[i].label.toLowerCase().trim();
+                        const value = cell ? (cell.v !== null ? cell.v : '') : '';
+                        p[header] = value;
                     });
                     return p;
                 });
+
+                // Ajuste de segurança: Se a planilha tiver colunas com nomes diferentes
+                // vamos garantir que as chaves principais existam
+                allProducts = allProducts.map(p => ({
+                    ...p,
+                    nome: p.nome || p['nome do produto'] || '',
+                    marca: p.marca || p['marca do produto'] || '',
+                    imagem: p.imagem || p['foto'] || p['url imagem'] || '',
+                    preco: p.preco || p['preço'] || '',
+                    categoria: p.categoria || p['tipo'] || ''
+                }));
 
                 initDynamicFilters();
                 applyFilters();
             } catch (e) {
                 console.error("Erro ao carregar dados:", e);
-                document.getElementById('products-container').innerHTML = '<div class="loading-state"><p>Erro ao carregar dados.</p></div>';
+                document.getElementById('products-container').innerHTML = '<div class="loading-state"><p>Erro ao carregar dados. Verifique se a planilha está pública.</p></div>';
             }
         }
+
 
         function initDynamicFilters() {
             const setupFilter = (idDesktop, idMobile, key) => {
