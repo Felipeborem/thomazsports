@@ -585,17 +585,26 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 800, once: true });
 
         const CONFIG = {
-            // SEGURANÇA: Use a URL de exportação CSV para evitar exposição de API Key
             SHEET_ID: '1Q56_9fPQy9tkYmOuhCTfnuxC3Ofc93VckerFnA1PpGE', 
             WHATSAPP_NUMBER: '27998912042' 
         };
 
         let allProducts = [];
         let filters = { categoria: 'Todos', marca: 'Todos', preco: 'Todos', ano: 'Todos', material: 'Todos' };
+
+        // FUNÇÃO MÁGICA: Transforma "Preço Vestuário" em "preco_vestuario"
+        function normalizeKey(text) {
+            return text.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                .replace(/ /g, '_') // Troca espaços por underline
+                .replace(/[?.,!]/g, '') // Remove pontuação
+                .trim();
+        }
 
         function toggleDrawer() {
             document.getElementById('mobile-drawer').classList.toggle('open');
@@ -614,48 +623,32 @@
 
         function parsePrice(priceStr) {
             if (!priceStr) return 0;
-            return parseFloat(priceStr.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+            const str = priceStr.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+            return parseFloat(str) || 0;
         }
 
-
-
-
-                async function fetchProducts() {
+        async function fetchProducts() {
             try {
-                // Usamos o endpoint /gviz/tq que retorna JSON sem necessidade de API KEY
                 const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json`;
                 const response = await fetch(url);
                 const text = await response.text();
-                
-                // O Google retorna o JSON envolto em uma função, precisamos limpar isso
                 const jsonString = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
                 const data = JSON.parse(jsonString);
                 
                 const table = data.table;
-                const cols = table.cols; // Cabeçalhos
-                const rows = table.rows; // Dados
+                const cols = table.cols;
+                const rows = table.rows;
 
                 allProducts = rows.map(row => {
                     let p = {};
                     row.c.forEach((cell, i) => {
-                        // Pega o nome da coluna (header) e o valor da célula
-                        const header = cols[i].label.toLowerCase().trim();
+                        const rawHeader = cols[i].label || `col${i}`;
+                        const cleanHeader = normalizeKey(rawHeader);
                         const value = cell ? (cell.v !== null ? cell.v : '') : '';
-                        p[header] = value;
+                        p[cleanHeader] = value;
                     });
                     return p;
                 });
-
-                // Ajuste de segurança: Se a planilha tiver colunas com nomes diferentes
-                // vamos garantir que as chaves principais existam
-                allProducts = allProducts.map(p => ({
-                    ...p,
-                    nome: p.nome || p['nome do produto'] || '',
-                    marca: p.marca || p['marca do produto'] || '',
-                    imagem: p.imagem || p['foto'] || p['url imagem'] || '',
-                    preco: p.preco || p['preço'] || '',
-                    categoria: p.categoria || p['tipo'] || ''
-                }));
 
                 initDynamicFilters();
                 applyFilters();
@@ -665,28 +658,22 @@
             }
         }
 
-
         function initDynamicFilters() {
             const setupFilter = (idDesktop, idMobile, key) => {
                 const values = [...new Set(allProducts.map(p => p[key]))].filter(Boolean).sort();
-                
                 const dContainer = document.getElementById(idDesktop);
                 const mContainer = document.getElementById(idMobile);
-                
-                // Limpa containers para evitar duplicados
-                dContainer.innerHTML = ''; 
-                mContainer.innerHTML = '';
+                dContainer.innerHTML = ''; mContainer.innerHTML = '';
 
                 const createItem = (val, isAll = false) => {
                     const li = document.createElement('li');
                     li.className = `filter-item ${isAll ? 'active' : ''}`;
-                    li.dataset.filterKey = key; // Identifica a qual grupo pertence
+                    li.dataset.filterKey = key;
                     const count = isAll ? allProducts.length : allProducts.filter(p => p[key] === val).length;
                     li.innerHTML = `${isAll ? 'Todos' : val} <span class="count-badge">${count}</span>`;
                     li.onclick = () => setFilter(key, isAll ? 'Todos' : val, li);
                     return li;
                 };
-
                 dContainer.appendChild(createItem(null, true));
                 mContainer.appendChild(createItem(null, true));
                 values.forEach(val => {
@@ -695,11 +682,10 @@
                 });
             };
 
-            // Tratamento especial para Categorias (que já existe no HTML)
+            // Categorias
             const catD = document.getElementById('cat-filters');
             const catM = document.getElementById('cat-filters-mobile');
-            catD.innerHTML = ''; catM.innerHTML = ''; 
-            
+            catD.innerHTML = ''; catM.innerHTML = '';
             const categories = [...new Set(allProducts.map(p => p.categoria))].filter(Boolean);
             const createCatItem = (cat, isAll = false) => {
                 const li = document.createElement('li');
@@ -726,7 +712,8 @@
         function updatePriceCounts() {
             const counts = { baixo: 0, medio: 0, alto: 0, premium: 0 };
             allProducts.forEach(p => {
-                const priceVal = p['tipo de produto']?.toLowerCase().includes('vestuário') ? p['preco_vestuario'] : p['preco'];
+                const isClothing = (p.tipo_produto || '').toLowerCase().includes('vestuário');
+                const priceVal = isClothing ? p.preco_vestuario : p.preco;
                 const pr = parsePrice(priceVal);
                 if (pr > 0 && pr <= 100) counts.baixo++;
                 else if (pr > 100 && pr <= 999) counts.medio++;
@@ -740,38 +727,22 @@
         }
 
         function setFilter(key, value, element) {
-            // LÓGICA DE TOGGLE: Se clicar no ativo, volta para 'Todos'
-            if (filters[key] === value && value !== 'Todos') {
-                filters[key] = 'Todos';
-            } else {
-                filters[key] = value;
-            }
+            if (filters[key] === value && value !== 'Todos') filters[key] = 'Todos';
+            else filters[key] = value;
 
-            // Atualiza visualmente apenas os itens do grupo clicado
             document.querySelectorAll(`.filter-item[data-filter-key="${key}"], .filter-item`).forEach(li => {
-                // Se for do grupo atual
                 if (li.dataset.filterKey === key) {
                     li.classList.remove('active');
-                    if (filters[key] === 'Todos' && li.textContent.includes('Todos')) {
-                        li.classList.add('active');
-                    } else if (li.textContent.includes(filters[key]) && filters[key] !== 'Todos') {
-                        li.classList.add('active');
-                    }
+                    if (filters[key] === 'Todos' && li.textContent.includes('Todos')) li.classList.add('active');
+                    else if (filters[key] !== 'Todos' && li.textContent.includes(filters[key])) li.classList.add('active');
                 }
             });
 
-            // Caso especial para a faixa de preço (que não tem data-filter-key no seu HTML original)
             if (key === 'preco') {
                 document.querySelectorAll('.filter-item').forEach(li => {
-                    if (li.textContent.includes('Até R$ 100') || li.textContent.includes('R$ 101') || 
-                        li.textContent.includes('R$ 1000') || li.textContent.includes('Acima de')) {
-                        li.classList.remove('active');
-                    }
+                    if (li.textContent.includes('R$')) li.classList.remove('active');
                 });
-                // Aqui você precisaria adicionar a classe active ao elemento clicado manualmente
-                element.classList.add('active'); 
-                // Se voltou para todos, remove a active do preço
-                if(filters.preco === 'Todos') element.classList.remove('active');
+                if(filters.preco !== 'Todos') element.classList.add('active');
             }
 
             if(window.innerWidth <= 992) toggleDrawer();
@@ -786,26 +757,37 @@
                 const visibilidade = (p.visivel || '').toLowerCase();
                 if (visibilidade === 'não') return false;
 
-                const matchBrand = filters.marca === 'Todos' || (p.marca || p.marca_vestuario) === filters.marca;
+                const isClothing = (p.tipo_produto || '').toLowerCase().includes('vestuário');
+                const currentBrand = isClothing ? (p.marca_vestuario || p.marca) : p.marca;
+                
+                const matchBrand = filters.marca === 'Todos' || currentBrand === filters.marca;
                 const matchCat = filters.categoria === 'Todos' || (p.categoria && p.categoria.toLowerCase().includes(filters.categoria.toLowerCase()));
                 const matchYear = filters.ano === 'Todos' || p.ano === filters.ano;
                 const matchMat = filters.material === 'Todos' || p.material === filters.material;
                 
                 let matchPrice = true;
-                const priceVal = p['tipo de produto']?.toLowerCase().includes('vestuário') ? p['preco_vestuario'] : p['preco'];
+                const priceVal = isClothing ? p.preco_vestuario : p.preco;
                 const pr = parsePrice(priceVal);
                 if (filters.preco === 'baixo') matchPrice = pr > 0 && pr <= 100;
                 else if (filters.preco === 'medio') matchPrice = pr > 100 && pr <= 999;
                 else if (filters.preco === 'alto') matchPrice = pr > 999 && pr <= 2000;
                 else if (filters.preco === 'premium') matchPrice = pr > 2000;
 
-                const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (p.marca || p.marca_vestuario || '').toLowerCase().includes(searchTerm);
+                const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (currentBrand || '').toLowerCase().includes(searchTerm);
                 
                 return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
             });
 
-            if (sortBy === 'low') filtered.sort((a, b) => parsePrice(a['tipo de produto']?.toLowerCase().includes('vestuário') ? a['preco_vestuario'] : a['preco']) - parsePrice(b['tipo de produto']?.toLowerCase().includes('vestuário') ? b['preco_vestuario'] : b['preco']));
-            else if (sortBy === 'high') filtered.sort((a, b) => parsePrice(b['tipo de produto']?.toLowerCase().includes('vestuário') ? b['preco_vestuario'] : b['preco']) - parsePrice(a['tipo de produto']?.toLowerCase().includes('vestuário') ? a['preco_vestuario'] : a['preco']));
+            if (sortBy === 'low') filtered.sort((a, b) => {
+                const pA = parsePrice((a.tipo_produto || '').toLowerCase().includes('vestuário') ? a.preco_vestuario : a.preco);
+                const pB = parsePrice((b.tipo_produto || '').toLowerCase().includes('vestuário') ? b.preco_vestuario : b.preco);
+                return pA - pB;
+            });
+            else if (sortBy === 'high') filtered.sort((a, b) => {
+                const pA = parsePrice((a.tipo_produto || '').toLowerCase().includes('vestuário') ? a.preco_vestuario : a.preco);
+                const pB = parsePrice((b.tipo_produto || '').toLowerCase().includes('vestuário') ? b.preco_vestuario : b.preco);
+                return pB - pA;
+            });
             else if (sortBy === 'name') filtered.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
             renderProducts(filtered);
@@ -825,11 +807,11 @@
                 card.setAttribute('data-aos', 'fade-up');
                 card.setAttribute('data-aos-delay', (index % 4) * 100);
 
-                const isClothing = (product['qual tipo de produto?'] || '').toLowerCase().includes('vestuário');
+                const isClothing = (product.tipo_produto || '').toLowerCase().includes('vestuário');
                 const finalBrand = isClothing ? (product.marca_vestuario || product.marca) : product.marca;
                 const finalImage = isClothing ? (product.imagem_vestuario || product.imagem) : product.imagem;
                 const finalPrice = isClothing ? product.preco_vestuario : product.preco;
-                const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product['preço parcelado'];
+                const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product.preco_parcelado;
 
                 let specsHTML = '';
                 if (isClothing) {
@@ -854,8 +836,8 @@
                     if (product.peso) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-weight-hanging"></i> Peso</span><span class="tech-value">${product.peso}</span></div>`;
                     if (product.balance) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-ruler-combined"></i> Balance</span><span class="tech-value">${product.balance}</span></div>`;
                     if (product.material) specsHTML += `<div class="tech-item"><span class="tech-label"><i class="fas fa-gem"></i> Material</span><span class="tech-value">${product.material}</span></div>`;
-                    if (product['tem tratamento'] && product['tem tratamento'].trim() !== '') {
-                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas fa-magic"></i> Tratamento</span><span class="tech-value">${product['tem tratamento'].toUpperCase()}</span></div>`;
+                    if (product.tem_tratamento && product.tem_tratamento.trim() !== '') {
+                        specsHTML += `<div class="tech-item highlight"><span class="tech-label"><i class="fas fa-magic"></i> Tratamento</span><span class="tech-value">${product.tem_tratamento.toUpperCase()}</span></div>`;
                     }
                     specsHTML = `<div class="tech-sheet">${specsHTML}</div>`;
                 }
@@ -895,16 +877,16 @@
         function handleBuy(index) {
             const product = allProducts[index];
             const selection = userSelections[index] || {};
-            const isClothing = (product['qual tipo de produto?'] || '').toLowerCase().includes('vestuário');
+            const isClothing = (product.tipo_produto || '').toLowerCase().includes('vestuário');
             const finalBrand = isClothing ? (product.marca_vestuario || product.marca) : product.marca;
             const finalPrice = isClothing ? product.preco_vestuario : product.preco;
-            const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product['preço parcelado'];
+            const finalPricePart = isClothing ? product.preco_parcelado_vestuario : product.preco_parcelado;
 
             let specDetails = '';
             if (isClothing) {
                 specDetails = `- Tamanho: ${selection.size || 'Não informado'}\n- Cor: ${selection.color || 'Não informado'}`;
             } else {
-                specDetails = `${product.peso ? '- Peso: ' + product.peso + '\n' : ''}${product.balance ? '- Balance: ' + product.balance + '\n' : ''}${product.material ? '- Material: ' + product.material + '\n' : ''}${product['tem tratamento'] ? '- Tratamento: ' + product['tem tratamento'] + '\n' : ''}`;
+                specDetails = `${product.peso ? '- Peso: ' + product.peso + '\n' : ''}${product.balance ? '- Balance: ' + product.balance + '\n' : ''}${product.material ? '- Material: ' + product.material + '\n' : ''}${product.tem_tratamento ? '- Tratamento: ' + product.tem_tratamento + '\n' : ''}`;
             }
 
             const message = `Olá! Tenho interesse no produto ${product.nome} (${finalBrand}).\n\nDetalhes:\n${specDetails}\nValor à Vista: R$ ${finalPrice}\n${finalPricePart ? 'Valor Parcelado: em até 12x ' + finalPricePart + '\n' : ''}\n\nAinda tem em estoque?`;
@@ -913,6 +895,7 @@
 
         document.addEventListener('DOMContentLoaded', fetchProducts);
     </script>
+
 
 </body >
 </html
