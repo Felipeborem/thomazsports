@@ -599,10 +599,12 @@
 
         // FUNÇÃO MÁGICA: Transforma "Preço Vestuário" em "preco_vestuario"
         function normalizeKey(text) {
-            return text.toLowerCase()
+            return String(text || '')
+                .toLowerCase()
                 .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
-                .replace(/ /g, '_') // Troca espaços por underline
+                .replace(/\s+/g, '_') // Espaços e quebras de linha -> underline
                 .replace(/[?.,!]/g, '') // Remove pontuação
+                .replace(/^_+|_+$/g, '') // Remove underlines no início/fim
                 .trim();
         }
 
@@ -852,9 +854,9 @@
                         </div>
                         <div style="margin-top: 20px;">
                             <div class="price-wrapper">
-                                <span class="cash-label">Oferta Exclusiva à Vista</span>
-                                <div class="price-cash">R$ ${finalPrice || '0,00'}</div>
-                                ${finalPricePart ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-credit-card"></i> em até 12x <span>${finalPricePart}</span></div>` : ''}
+                                <span class="cash-label">Pagamento em até 12x sem juros</span>
+                                <div class="price-cash">${finalPricePart || ('R$ ' + (finalPrice || '0,00'))}</div>
+                                ${finalPrice ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-money-bill-wave"></i> À vista: <span>R$ ${finalPrice}</span></div>` : ''}
                             </div>
                             <button class="btn-buy" onclick="handleBuy(${index})">
                                 <i class="fab fa-whatsapp"></i> Comprar Agora
