@@ -388,13 +388,16 @@
             border-radius: 2px;
         }
         .price-installments {
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 8px;
+            text-align: center;
+            line-height: 1.4;
         }
         .price-installments span {
             color: var(--dark-black);
@@ -485,10 +488,8 @@
     <div class="main-wrapper">
         <aside id="desktop-sidebar">
             <div class="sidebar-section">
-                <span class="sidebar-title">Categorias</span>
-                <ul class="filter-list" id="cat-filters">
-                    <li class="filter-item active" onclick="setFilter('categoria', 'Todos', this)">Todos</li>
-                </ul>
+                <span class="sidebar-title">Marcas</span>
+                <ul class="filter-list" id="brand-filters"></ul>
             </div>
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
@@ -498,10 +499,6 @@
                     <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000 <span class="count-badge" id="count-alto">0</span></li>
                     <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000 <span class="count-badge" id="count-premium">0</span></li>
                 </ul>
-            </div>
-            <div class="sidebar-section">
-                <span class="sidebar-title">Marcas</span>
-                <ul class="filter-list" id="brand-filters"></ul>
             </div>
             <div class="sidebar-section">
                 <span class="sidebar-title">Ano</span>
@@ -517,8 +514,8 @@
         <div class="mobile-drawer" id="mobile-drawer">
             <button class="close-drawer" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
             <div class="sidebar-section">
-                <span class="sidebar-title">Categorias</span>
-                <ul class="filter-list" id="cat-filters-mobile"></ul>
+                <span class="sidebar-title">Marcas</span>
+                <ul class="filter-list" id="brand-filters-mobile"></ul>
             </div>
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
@@ -528,10 +525,6 @@
                     <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000</li>
                     <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000</li>
                 </ul>
-            </div>
-            <div class="sidebar-section">
-                <span class="sidebar-title">Marcas</span>
-                <ul class="filter-list" id="brand-filters-mobile"></ul>
             </div>
             <div class="sidebar-section">
                 <span class="sidebar-title">Ano</span>
@@ -595,7 +588,7 @@
         };
 
         let allProducts = [];
-        let filters = { categoria: 'Todos', marca: 'Todos', preco: 'Todos', ano: 'Todos', material: 'Todos' };
+        let filters = { marca: 'Todos', preco: 'Todos', ano: 'Todos', material: 'Todos' };
 
         // FUNÇÃO MÁGICA: Transforma "Preço Vestuário" em "preco_vestuario"
         function normalizeKey(text) {
@@ -627,6 +620,11 @@
             if (!priceStr) return 0;
             const str = priceStr.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
             return parseFloat(str) || 0;
+        }
+
+        function formatBRL(value) {
+            if (!value || isNaN(value)) return 'R$ 0';
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 2 });
         }
 
         async function fetchProducts() {
@@ -684,28 +682,31 @@
                 });
             };
 
-            // Categorias
-            const catD = document.getElementById('cat-filters');
-            const catM = document.getElementById('cat-filters-mobile');
-            catD.innerHTML = ''; catM.innerHTML = '';
-            const categories = [...new Set(allProducts.map(p => p.categoria))].filter(Boolean);
-            const createCatItem = (cat, isAll = false) => {
+            // Marcas (principal - considera marca_vestuario quando for vestuário)
+            const getEffectiveBrand = (p) => {
+                const isClothing = (p.tipo_produto || '').toLowerCase().includes('vestuário');
+                return isClothing ? (p.marca_vestuario || p.marca) : p.marca;
+            };
+            const brandValues = [...new Set(allProducts.map(getEffectiveBrand))].filter(Boolean).sort();
+            const brandD = document.getElementById('brand-filters');
+            const brandM = document.getElementById('brand-filters-mobile');
+            brandD.innerHTML = ''; brandM.innerHTML = '';
+            const createBrandItem = (val, isAll = false) => {
                 const li = document.createElement('li');
                 li.className = `filter-item ${isAll ? 'active' : ''}`;
-                li.dataset.filterKey = 'categoria';
-                const count = isAll ? allProducts.length : allProducts.filter(p => p.categoria === cat).length;
-                li.innerHTML = `${isAll ? 'Todos' : cat} <span class="count-badge">${count}</span>`;
-                li.onclick = () => setFilter('categoria', isAll ? 'Todos' : cat, li);
+                li.dataset.filterKey = 'marca';
+                const count = isAll ? allProducts.length : allProducts.filter(p => getEffectiveBrand(p) === val).length;
+                li.innerHTML = `${isAll ? 'Todos' : val} <span class="count-badge">${count}</span>`;
+                li.onclick = () => setFilter('marca', isAll ? 'Todos' : val, li);
                 return li;
             };
-            catD.appendChild(createCatItem(null, true));
-            catM.appendChild(createCatItem(null, true));
-            categories.forEach(cat => {
-                catD.appendChild(createCatItem(cat));
-                catM.appendChild(createCatItem(cat));
+            brandD.appendChild(createBrandItem(null, true));
+            brandM.appendChild(createBrandItem(null, true));
+            brandValues.forEach(val => {
+                brandD.appendChild(createBrandItem(val));
+                brandM.appendChild(createBrandItem(val));
             });
 
-            setupFilter('brand-filters', 'brand-filters-mobile', 'marca');
             setupFilter('year-filters', 'year-filters-mobile', 'ano');
             setupFilter('material-filters', 'material-filters-mobile', 'material');
             updatePriceCounts();
@@ -763,7 +764,6 @@
                 const currentBrand = isClothing ? (p.marca_vestuario || p.marca) : p.marca;
                 
                 const matchBrand = filters.marca === 'Todos' || currentBrand === filters.marca;
-                const matchCat = filters.categoria === 'Todos' || (p.categoria && p.categoria.toLowerCase().includes(filters.categoria.toLowerCase()));
                 const matchYear = filters.ano === 'Todos' || p.ano === filters.ano;
                 const matchMat = filters.material === 'Todos' || p.material === filters.material;
                 
@@ -777,7 +777,7 @@
 
                 const matchSearch = (p.nome || '').toLowerCase().includes(searchTerm) || (currentBrand || '').toLowerCase().includes(searchTerm);
                 
-                return matchBrand && matchCat && matchYear && matchMat && matchPrice && matchSearch;
+                return matchBrand && matchYear && matchMat && matchPrice && matchSearch;
             });
 
             if (sortBy === 'low') filtered.sort((a, b) => {
@@ -854,9 +854,14 @@
                         </div>
                         <div style="margin-top: 20px;">
                             <div class="price-wrapper">
-                                <span class="cash-label">Pagamento em até 12x sem juros</span>
-                                <div class="price-cash">${finalPricePart || ('R$ ' + (finalPrice || '0,00'))}</div>
-                                ${finalPrice ? `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-money-bill-wave"></i> À vista: <span>R$ ${finalPrice}</span></div>` : ''}
+                                <span class="cash-label">À vista</span>
+                                <div class="price-cash">${formatBRL(parsePrice(finalPrice) || parsePrice(finalPricePart))}</div>
+                                ${(() => {
+                                    const totalParcelado = parsePrice(finalPricePart);
+                                    if (!totalParcelado) return '';
+                                    const parcela = totalParcelado / 12;
+                                    return `<div class="price-divider"></div><div class="price-installments"><i class="fas fa-credit-card"></i> ou 12x de <span>${formatBRL(parcela)}</span> sem juros</div>`;
+                                })()}
                             </div>
                             <button class="btn-buy" onclick="handleBuy(${index})">
                                 <i class="fab fa-whatsapp"></i> Comprar Agora
