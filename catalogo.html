@@ -7,6 +7,10 @@
     <title>Catálogo Elite | THOMAZ SPORTS</title>
     <meta name="description" content="Catálogo de alta performance Beach Tennis.">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logopng.png">
+    <link rel="apple-touch-icon" href="logopng.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -494,10 +498,10 @@
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
                 <ul class="filter-list">
-                    <li class="filter-item" onclick="setFilter('preco', 'baixo', this)">Até R$ 100 <span class="count-badge" id="count-baixo">0</span></li>
-                    <li class="filter-item" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999 <span class="count-badge" id="count-medio">0</span></li>
-                    <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000 <span class="count-badge" id="count-alto">0</span></li>
-                    <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000 <span class="count-badge" id="count-premium">0</span></li>
+                    <li class="filter-item" data-filter-key="preco" data-value="baixo" onclick="setFilter('preco', 'baixo', this)">Até R$ 100 <span class="count-badge" id="count-baixo">0</span></li>
+                    <li class="filter-item" data-filter-key="preco" data-value="medio" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999 <span class="count-badge" id="count-medio">0</span></li>
+                    <li class="filter-item" data-filter-key="preco" data-value="alto" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000 <span class="count-badge" id="count-alto">0</span></li>
+                    <li class="filter-item" data-filter-key="preco" data-value="premium" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000 <span class="count-badge" id="count-premium">0</span></li>
                 </ul>
             </div>
             <div class="sidebar-section">
@@ -520,10 +524,10 @@
             <div class="sidebar-section">
                 <span class="sidebar-title">Faixa de Preço</span>
                 <ul class="filter-list">
-                    <li class="filter-item" onclick="setFilter('preco', 'baixo', this)">Até R$ 100</li>
-                    <li class="filter-item" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999</li>
-                    <li class="filter-item" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000</li>
-                    <li class="filter-item" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000</li>
+                    <li class="filter-item" data-filter-key="preco" data-value="baixo" onclick="setFilter('preco', 'baixo', this)">Até R$ 100</li>
+                    <li class="filter-item" data-filter-key="preco" data-value="medio" onclick="setFilter('preco', 'medio', this)">R$ 101 - 999</li>
+                    <li class="filter-item" data-filter-key="preco" data-value="alto" onclick="setFilter('preco', 'alto', this)">R$ 1000 - 2000</li>
+                    <li class="filter-item" data-filter-key="preco" data-value="premium" onclick="setFilter('preco', 'premium', this)">Acima de R$ 2000</li>
                 </ul>
             </div>
             <div class="sidebar-section">
@@ -553,9 +557,8 @@
                     <input type="text" id="searchInput" placeholder="Buscar produto ou marca..." oninput="applyFilters()">
                 </div>
                 <select class="sort-select" id="sortSelect" onchange="applyFilters()">
-                    <option value="default">Ordenar por:</option>
                     <option value="low">Menor Preço</option>
-                    <option value="high">Maior Preço</option>
+                    <option value="high" selected>Maior Preço</option>
                     <option value="name">Nome (A-Z)</option>
                 </select>
             </div>
@@ -665,17 +668,16 @@
                 const mContainer = document.getElementById(idMobile);
                 dContainer.innerHTML = ''; mContainer.innerHTML = '';
 
-                const createItem = (val, isAll = false) => {
+                const createItem = (val) => {
                     const li = document.createElement('li');
-                    li.className = `filter-item ${isAll ? 'active' : ''}`;
+                    li.className = 'filter-item';
                     li.dataset.filterKey = key;
-                    const count = isAll ? allProducts.length : allProducts.filter(p => p[key] === val).length;
-                    li.innerHTML = `${isAll ? 'Todos' : val} <span class="count-badge">${count}</span>`;
-                    li.onclick = () => setFilter(key, isAll ? 'Todos' : val, li);
+                    li.dataset.value = val;
+                    const count = allProducts.filter(p => p[key] === val).length;
+                    li.innerHTML = `${val} <span class="count-badge">${count}</span>`;
+                    li.onclick = () => setFilter(key, val, li);
                     return li;
                 };
-                dContainer.appendChild(createItem(null, true));
-                mContainer.appendChild(createItem(null, true));
                 values.forEach(val => {
                     dContainer.appendChild(createItem(val));
                     mContainer.appendChild(createItem(val));
@@ -691,17 +693,16 @@
             const brandD = document.getElementById('brand-filters');
             const brandM = document.getElementById('brand-filters-mobile');
             brandD.innerHTML = ''; brandM.innerHTML = '';
-            const createBrandItem = (val, isAll = false) => {
+            const createBrandItem = (val) => {
                 const li = document.createElement('li');
-                li.className = `filter-item ${isAll ? 'active' : ''}`;
+                li.className = 'filter-item';
                 li.dataset.filterKey = 'marca';
-                const count = isAll ? allProducts.length : allProducts.filter(p => getEffectiveBrand(p) === val).length;
-                li.innerHTML = `${isAll ? 'Todos' : val} <span class="count-badge">${count}</span>`;
-                li.onclick = () => setFilter('marca', isAll ? 'Todos' : val, li);
+                li.dataset.value = val;
+                const count = allProducts.filter(p => getEffectiveBrand(p) === val).length;
+                li.innerHTML = `${val} <span class="count-badge">${count}</span>`;
+                li.onclick = () => setFilter('marca', val, li);
                 return li;
             };
-            brandD.appendChild(createBrandItem(null, true));
-            brandM.appendChild(createBrandItem(null, true));
             brandValues.forEach(val => {
                 brandD.appendChild(createBrandItem(val));
                 brandM.appendChild(createBrandItem(val));
@@ -730,23 +731,12 @@
         }
 
         function setFilter(key, value, element) {
-            if (filters[key] === value && value !== 'Todos') filters[key] = 'Todos';
+            if (filters[key] === value) filters[key] = 'Todos';
             else filters[key] = value;
 
-            document.querySelectorAll(`.filter-item[data-filter-key="${key}"], .filter-item`).forEach(li => {
-                if (li.dataset.filterKey === key) {
-                    li.classList.remove('active');
-                    if (filters[key] === 'Todos' && li.textContent.includes('Todos')) li.classList.add('active');
-                    else if (filters[key] !== 'Todos' && li.textContent.includes(filters[key])) li.classList.add('active');
-                }
+            document.querySelectorAll(`.filter-item[data-filter-key="${key}"]`).forEach(li => {
+                li.classList.toggle('active', li.dataset.value === filters[key]);
             });
-
-            if (key === 'preco') {
-                document.querySelectorAll('.filter-item').forEach(li => {
-                    if (li.textContent.includes('R$')) li.classList.remove('active');
-                });
-                if(filters.preco !== 'Todos') element.classList.add('active');
-            }
 
             if(window.innerWidth <= 992) toggleDrawer();
             applyFilters();
@@ -785,7 +775,7 @@
                 const pB = parsePrice((b.tipo_produto || '').toLowerCase().includes('vestuário') ? b.preco_vestuario : b.preco);
                 return pA - pB;
             });
-            else if (sortBy === 'high') filtered.sort((a, b) => {
+            else if (sortBy === 'high' || sortBy === 'default') filtered.sort((a, b) => {
                 const pA = parsePrice((a.tipo_produto || '').toLowerCase().includes('vestuário') ? a.preco_vestuario : a.preco);
                 const pB = parsePrice((b.tipo_produto || '').toLowerCase().includes('vestuário') ? b.preco_vestuario : b.preco);
                 return pB - pA;
